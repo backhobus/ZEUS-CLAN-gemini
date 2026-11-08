@@ -392,26 +392,32 @@
       letter-spacing: 1px;
     }
 
-    /* 명예의 전당 갤러리 그리드 (3:2 가로 비율 및 이름 숨김 적용) */
+    /* 명예의 전당 갤러리 그리드 (3:2 비율의 콤팩트 카드 정렬) */
     .hall-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 12px;
       margin-top: 20px;
-      max-height: 450px;
+      max-height: 480px;
       overflow-y: auto;
+      padding-right: 4px;
     }
     .hall-card {
       background: rgba(255, 255, 255, 0.03);
       border-radius: 8px;
-      padding: 10px;
-      text-align: center;
+      padding: 6px;
       border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .hall-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--gold-primary);
     }
     .hall-card img {
       width: 100%;
-      aspect-ratio: 3 / 2; /* 3:2 가로가 긴 비율 설정 */
-      border-radius: 6px;
+      aspect-ratio: 3 / 2; /* 3:2 비율 고정 */
+      border-radius: 4px;
       object-fit: cover;
       display: block;
     }
@@ -442,6 +448,10 @@
       }
       .input-box::placeholder {
         font-size: 0.78rem;
+      }
+      .hall-gallery {
+        grid-template-columns: repeat(2, 1fr); /* 모바일에서는 2열로 작고 촘촘하게 배치 */
+        gap: 8px;
       }
     }
   </style>
@@ -565,7 +575,7 @@
       <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">ZEUS의 이름을 빛낸 함장들의 기록</p>
       
       <div class="hall-gallery" id="hallGallery">
-        <div class="hall-card" style="color: #64748b; padding: 30px;">이미지를 불러오는 중...</div>
+        <div class="hall-card" style="color: #64748b; padding: 30px; grid-column: 1 / -1; text-align: center;">이미지를 불러오는 중...</div>
       </div>
       <button class="btn-prev" style="margin-top: 20px; width: 100%;" onclick="closeHallOfFame()">닫기</button>
     </div>
@@ -587,7 +597,7 @@
       discord: ''
     };
 
-    // --- 명예의 전당 이미지 구글 드라이브에서 자동 불러오기 (이름 숨김 처리) ---
+    // --- 명예의 전당 이미지 구글 드라이브에서 자동 불러오기 ---
     function loadHallOfFameImages() {
       const gallery = document.getElementById('hallGallery');
       fetch(GAS_WEB_APP_URL)
@@ -600,12 +610,12 @@
               </div>
             `).join('');
           } else {
-            gallery.innerHTML = `<div class="hall-card" style="color: #64748b; padding: 30px; grid-column: span 1;">등록된 기록 이미지가 없습니다.</div>`;
+            gallery.innerHTML = `<div class="hall-card" style="color: #64748b; padding: 30px; grid-column: 1 / -1; text-align: center;">등록된 기록 이미지가 없습니다.</div>`;
           }
         })
         .catch(err => {
           console.error(err);
-          gallery.innerHTML = `<div class="hall-card" style="color: var(--danger-red); padding: 30px; grid-column: span 1;">이미지를 불러오지 못했습니다.</div>`;
+          gallery.innerHTML = `<div class="hall-card" style="color: var(--danger-red); padding: 30px; grid-column: 1 / -1; text-align: center;">이미지를 불러오지 못했습니다.</div>`;
         });
     }
 
@@ -777,7 +787,7 @@
         currentSlide = 3;
       } else if (n === 3) {
         const age = document.getElementById('inputAge').value.trim();
-        if (-!age) { showError('err3', '답변을 입력해 주세요.'); return; }
+        if (!age) { showError('err3', '답변을 입력해 주세요.'); return; }
         if (!/\d/.test(age)) {
           showError('err3', '숫자를 포함해 주세요.');
           return;
