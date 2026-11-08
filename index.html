@@ -4,19 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZEUS CLAN - 모던워쉽</title>
-  <!-- 탭 아이콘 (GitHub 저장소의 ZEUS_web.png 로드) -->
-  <link rel="icon" href="ZEUSweb.png" type="image/png">
+  <!-- 탭 아이콘 -->
+  <link rel="icon" href="ZEUS_web.png" type="image/png">
   <!-- FontAwesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-color: #0b0e14;
-      --card-bg: rgba(20, 26, 38, 0.85);
+      --bg-color: #05070a;
+      --card-bg: rgba(15, 18, 25, 0.95);
       --gold-primary: #d4af37;
       --gold-accent: #f39c12;
-      --hero-subtext: #8e9aaf;
+      --hero-subtext: #94a3b8;
       --purple-legend: #a855f7;
       --yellow-hero: #eab308;
       --discord-blue: rgba(88, 101, 242, 0.85);
@@ -45,7 +45,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      background-image: radial-gradient(circle at 50% 20%, #1a233a 0%, #0b0e14 70%);
+      /* 푸른빛 후광을 완전한 다크 블랙 테마로 변경 */
+      background-image: radial-gradient(circle at 50% 20%, #12161f 0%, #05070a 80%);
     }
 
     input, textarea {
@@ -65,20 +66,36 @@
       align-items: center;
     }
 
-    /* Header Styling */
+    /* Header Styling & 로고 원 정중앙 정렬 */
     header {
       text-align: center;
       margin-top: 20px;
       margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .logo-container {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--gold-primary), #4a3b10);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .logo-img {
-      width: 120px;
-      height: 120px;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-      margin-bottom: 15px;
       object-fit: cover;
+      object-position: center;
+      display: block;
     }
 
     .since-text {
@@ -110,7 +127,7 @@
 
     .btn-main-apply {
       grid-column: span 2;
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(243, 156, 18, 0.1));
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(243, 156, 18, 0.05));
       border: 1px solid var(--gold-primary);
       color: var(--gold-primary);
       padding: 18px;
@@ -126,7 +143,7 @@
     }
 
     .btn-main-apply:hover {
-      background: rgba(212, 175, 55, 0.3);
+      background: rgba(212, 175, 55, 0.25);
       box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
     }
 
@@ -145,12 +162,12 @@
     }
 
     .btn-hall {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: #ffffff;
     }
     .btn-hall:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     .btn-discord {
@@ -170,7 +187,7 @@
       border: 1px solid var(--border-gold);
       border-radius: 16px;
       padding: 30px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
       display: none;
     }
 
@@ -181,7 +198,7 @@
     /* Progress Bar */
     .progress-container {
       width: 100%;
-      background-color: rgba(255, 255, 255, 0.1);
+      background-color: rgba(255, 255, 255, 0.08);
       height: 8px;
       border-radius: 4px;
       margin-bottom: 25px;
@@ -213,8 +230,8 @@
     .input-box {
       width: 100%;
       padding: 14px 16px;
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(10, 13, 20, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 8px;
       color: #ffffff;
       font-size: 1rem;
@@ -225,7 +242,7 @@
       border-color: var(--gold-primary);
     }
     .input-box::placeholder {
-      color: #94a3b8;
+      color: #64748b;
       font-size: 0.95rem;
     }
 
@@ -245,8 +262,8 @@
     .choice-btn {
       flex: 1;
       padding: 14px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: white;
       border-radius: 8px;
       font-weight: 600;
@@ -268,7 +285,7 @@
     .btn-prev {
       flex: 1;
       padding: 12px;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
       border: none;
       color: #ffffff;
       border-radius: 8px;
@@ -303,7 +320,7 @@
 
     /* Slide 6 Review */
     .review-item {
-      background: rgba(0, 0, 0, 0.2);
+      background: rgba(0, 0, 0, 0.4);
       border-radius: 8px;
       padding: 12px 16px;
       margin-bottom: 12px;
@@ -336,7 +353,7 @@
       margin-top: 40px;
       padding: 20px;
       font-size: 0.85rem;
-      color: #64748b;
+      color: #475569;
       letter-spacing: 1px;
     }
 
@@ -348,11 +365,11 @@
       margin-top: 20px;
     }
     .hall-card {
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.03);
       border-radius: 8px;
       padding: 10px;
       text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
     /* Mobile Responsive Customization */
@@ -367,8 +384,10 @@
 
   <div class="container">
     <header>
-      <!-- GitHub 저장소의 ZEUS.png 로드 -->
-      <img src="ZEUS.png" alt="ZEUS Clan Logo" class="logo-img">
+      <!-- 원 정중앙 핏을 유지하도록 래퍼 컨테이너 적용 -->
+      <div class="logo-container">
+        <img src="ZEUS.png" alt="ZEUS Clan Logo" class="logo-img">
+      </div>
       <div class="since-text">Since 2020</div>
       <div class="title-comment">
         <span class="text-hero">영웅</span>, <span class="text-legend">전설</span> 타이틀 누적 299개 배출
@@ -470,14 +489,14 @@
       </div>
     </div>
 
-    <!-- 명예의 전당 섹션 (닉네임 텍스트 삭제됨) -->
+    <!-- 명예의 전당 섹션 (요청 문구 적용) -->
     <div id="hallCard" class="section-card">
       <div class="slide-title"><i class="fa-solid fa-trophy" style="color: var(--gold-primary);"></i> ZEUS 명예의 전당</div>
-      <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">클랜을 빛낸 명예로운 유저 기록 카드입니다.</p>
+      <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">ZEUS의 이름을 빛낸 함장들의 기록</p>
       
       <div class="hall-gallery" id="hallGallery">
         <div class="hall-card">
-          <div style="height: 150px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #64748b; border-radius: 4px;">이미지 준비중</div>
+          <div style="height: 150px; background: rgba(255,255,255,0.03); display: flex; align-items: center; justify-content: center; color: #475569; border-radius: 4px;">이미지 준비중</div>
         </div>
       </div>
       <button class="btn-prev" style="margin-top: 20px; width: 100%;" onclick="closeHallOfFame()">닫기</button>
