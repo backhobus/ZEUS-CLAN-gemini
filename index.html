@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZEUS CLAN - 모던워쉽</title>
-  <!-- 탭 아이콘 -->
+  <!-- 탭 아이콘 (ZEUSweb.png 적용) -->
   <link rel="icon" href="ZEUSweb.png" type="image/png">
   <!-- FontAwesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;800&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@700;900&family=Noto+Sans+KR:wght@300;400;600;800&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -19,7 +19,6 @@
       --hero-subtext: #94a3b8;
       --purple-legend: #a855f7;
       --yellow-hero: #eab308;
-      /* 디스코드 반투명 색상 */
       --discord-blue: rgba(88, 101, 242, 0.45);
       --discord-blue-hover: rgba(88, 101, 242, 0.7);
       --danger-red: #ef4444;
@@ -121,21 +120,22 @@
       font-size: 1.05rem;
       letter-spacing: 2px;
       color: var(--hero-subtext);
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .clan-title {
       font-family: 'Cinzel', serif;
-      font-size: 2rem;
+      font-size: 2.8rem;
       font-weight: 900;
       color: var(--gold-primary);
-      letter-spacing: 4px;
-      margin-bottom: 6px;
-      text-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+      letter-spacing: 6px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+      line-height: 1.1;
     }
 
     .title-comment {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 600;
       color: #e2e8f0;
       line-height: 1.5;
@@ -144,7 +144,7 @@
     .text-hero { color: var(--yellow-hero); font-weight: 800; }
     .text-legend { color: var(--purple-legend); font-weight: 800; }
 
-    /* Nav Grid Structure (메인 버튼 영역) */
+    /* Nav Grid Structure */
     .nav-grid {
       width: 100%;
       display: grid;
@@ -200,7 +200,6 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    /* 반투명 디스코드 버튼 */
     .btn-discord {
       background: var(--discord-blue);
       border: 1px solid rgba(88, 101, 242, 0.4);
@@ -418,7 +417,8 @@
         gap: 12px;
       }
       .clan-title {
-        font-size: 1.7rem;
+        font-size: 2.1rem;
+        letter-spacing: 4px;
       }
       .title-comment {
         font-size: 0.95rem;
@@ -569,6 +569,7 @@
   </div>
 
   <script>
+    // 전달해주신 Google Apps Script Web App URL 설정 완료
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzTnIMfs4aGpEF-ukH36z3NPo834F4iJAAUMwSGLl7POD_cFx7_VjNY2CNSKrD6CjbTgg/exec";
 
     let currentSlide = 1;
@@ -580,7 +581,7 @@
       discord: ''
     };
 
-    // --- 배경 초고속/고빈도 번개 효과 스크립트 ---
+    // --- 배경 번개 효과 스크립트 ---
     const canvas = document.getElementById('lightningCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -669,7 +670,6 @@
     });
 
     function openApplyForm() {
-      // 메인 버튼 3개 숨기기
       document.getElementById('navGrid').style.display = 'none';
       document.getElementById('hallCard').classList.remove('active');
       document.getElementById('applyCard').classList.add('active');
@@ -678,7 +678,6 @@
     }
 
     function openHallOfFame() {
-      // 메인 버튼 3개 숨기기
       document.getElementById('navGrid').style.display = 'none';
       document.getElementById('applyCard').classList.remove('active');
       document.getElementById('hallCard').classList.add('active');
@@ -686,13 +685,11 @@
 
     function closeHallOfFame() {
       document.getElementById('hallCard').classList.remove('active');
-      // 메인 버튼 3개 다시 복원
       document.getElementById('navGrid').style.display = 'grid';
     }
 
     function closeForm() {
       document.getElementById('applyCard').classList.remove('active');
-      // 메인 버튼 3개 다시 복원
       document.getElementById('navGrid').style.display = 'grid';
     }
 
