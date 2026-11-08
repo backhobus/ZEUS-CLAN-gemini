@@ -46,6 +46,8 @@
       flex-direction: column;
       align-items: center;
       background-image: radial-gradient(circle at 50% 20%, #12161f 0%, #05070a 80%);
+      overflow-x: hidden;
+      position: relative;
     }
 
     input, textarea {
@@ -53,6 +55,17 @@
       -moz-user-select: text !important;
       -ms-user-select: text !important;
       user-select: text !important;
+    }
+
+    /* 번개 효과 캔버스 배경 레이어 */
+    #lightningCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 1;
     }
 
     .container {
@@ -63,6 +76,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      z-index: 2;
+      position: relative;
     }
 
     /* Header Styling */
@@ -73,9 +88,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      width: 100%;
     }
 
-    /* 노란색 테두리/후광 삭제 및 정확한 원형 마스킹 처리 */
     .logo-container {
       width: 140px;
       height: 140px;
@@ -115,7 +130,7 @@
     .text-hero { color: var(--yellow-hero); font-weight: 800; }
     .text-legend { color: var(--purple-legend); font-weight: 800; }
 
-    /* Nav Grid Structure (2줄 / 2:1:1 비율) */
+    /* Nav Grid Structure (화면을 꽉 채우도록 버튼 비율 및 너비 최적화) */
     .nav-grid {
       width: 100%;
       display: grid;
@@ -126,11 +141,12 @@
 
     .btn-main-apply {
       grid-column: span 2;
+      width: 100%;
       background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(243, 156, 18, 0.05));
       border: 1px solid var(--gold-primary);
       color: var(--gold-primary);
-      padding: 18px;
-      font-size: 1.2rem;
+      padding: 20px;
+      font-size: 1.25rem;
       font-weight: 700;
       border-radius: 12px;
       cursor: pointer;
@@ -138,25 +154,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .btn-main-apply:hover {
       background: rgba(212, 175, 55, 0.25);
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
     }
 
     .btn-sub {
-      padding: 14px;
+      width: 100%;
+      padding: 16px;
       border-radius: 10px;
-      font-size: 1rem;
+      font-size: 1.05rem;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       transition: all 0.3s ease;
     }
 
@@ -176,7 +193,7 @@
     }
     .btn-discord:hover {
       background: rgba(88, 101, 242, 1);
-      box-shadow: 0 0 12px rgba(88, 101, 242, 0.5);
+      box-shadow: 0 0 15px rgba(88, 101, 242, 0.6);
     }
 
     /* Modal / Form Card Structure */
@@ -260,7 +277,7 @@
     }
     .choice-btn {
       flex: 1;
-      padding: 14px;
+      padding: 16px;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.15);
       color: white;
@@ -268,6 +285,7 @@
       font-weight: 600;
       cursor: pointer;
       text-align: center;
+      font-size: 1.05rem;
     }
     .choice-btn.selected {
       background: rgba(212, 175, 55, 0.2);
@@ -283,7 +301,7 @@
     }
     .btn-prev {
       flex: 1;
-      padding: 12px;
+      padding: 14px;
       background: rgba(255, 255, 255, 0.08);
       border: none;
       color: #ffffff;
@@ -293,13 +311,14 @@
     }
     .btn-next {
       flex: 9;
-      padding: 12px;
+      padding: 14px;
       background: var(--gold-primary);
       border: none;
       color: #000000;
       border-radius: 8px;
       cursor: pointer;
       font-weight: 700;
+      font-size: 1.05rem;
       transition: background 0.3s;
     }
     .btn-next:hover {
@@ -307,11 +326,11 @@
     }
     .btn-submit-final {
       width: 100%;
-      padding: 14px;
+      padding: 16px;
       background: var(--gold-primary);
       border: none;
       color: #000;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 800;
       border-radius: 8px;
       cursor: pointer;
@@ -321,7 +340,7 @@
     .review-item {
       background: rgba(0, 0, 0, 0.4);
       border-radius: 8px;
-      padding: 12px 16px;
+      padding: 14px 16px;
       margin-bottom: 12px;
       display: flex;
       justify-content: space-between;
@@ -333,9 +352,9 @@
       background: transparent;
       border: 1px solid var(--gold-primary);
       color: var(--gold-primary);
-      padding: 4px 10px;
+      padding: 6px 12px;
       border-radius: 4px;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       cursor: pointer;
     }
 
@@ -381,6 +400,9 @@
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
 
+  <!-- 번개 효과 캔버스 -->
+  <canvas id="lightningCanvas"></canvas>
+
   <div class="container">
     <header>
       <div class="logo-container">
@@ -392,7 +414,7 @@
       </div>
     </header>
 
-    <!-- 메인 네비게이션 버튼 (2:1:1 배치) -->
+    <!-- 메인 네비게이션 버튼 (2:1:1 비율, 화면에 꽉 차는 디자인) -->
     <div class="nav-grid">
       <button class="btn-main-apply" onclick="openApplyForm()">
         <i class="fa-solid fa-file-signature"></i> 가입신청서 작성
@@ -517,6 +539,90 @@
       discord: ''
     };
 
+    // --- 배경 번개 효과 스크립트 ---
+    const canvas = document.getElementById('lightningCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    let flashAlpha = 0;
+    let lightningBranches = [];
+    let nextLightningTime = Date.now() + getRandomInterval();
+
+    function getRandomInterval() {
+      // 컴퓨터와 모바일 환경에 맞춰 빈도 조절 (자주 치도록 설정)
+      return Math.random() * 2500 + 1500; // 1.5초 ~ 4초 간격
+    }
+
+    function createLightning() {
+      const isDesktop = window.innerWidth > 768;
+      // 1. 컴퓨터는 화면이 넓으므로 번개 범위도 전체 넓이로 넓게 생성
+      const startX = isDesktop ? Math.random() * canvas.width : Math.random() * (canvas.width * 0.8) + (canvas.width * 0.1);
+      let currentX = startX;
+      let currentY = 0;
+      let branches = [{x: currentX, y: currentY}];
+
+      while (currentY < canvas.height * 0.7) {
+        currentX += (Math.random() - 0.5) * (isDesktop ? 120 : 60);
+        currentY += Math.random() * 40 + 20;
+        branches.push({x: currentX, y: currentY});
+      }
+      lightningBranches = branches;
+      flashAlpha = 0.85; // 번쩍임 강도
+    }
+
+    function animateLightning() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 2. 가입신청서 작성 중이거나 명예의 전당 열림 여부 확인
+      const applyCardActive = document.getElementById('applyCard').classList.contains('active');
+      const hallCardActive = document.getElementById('hallCard').classList.contains('active');
+
+      if (!applyCardActive && !hallCardActive) {
+        // 메인 화면일 때만 번개 실행
+        if (Date.now() > nextLightningTime) {
+          createLightning();
+          nextLightningTime = Date.now() + getRandomInterval();
+        }
+
+        if (flashAlpha > 0) {
+          // 화면 전체 번쩍임 효과
+          ctx.fillStyle = `rgba(212, 175, 55, ${flashAlpha * 0.12})`;
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          // 번개 줄기 그리기
+          if (lightningBranches.length > 1) {
+            ctx.strokeStyle = `rgba(255, 255, 255, ${flashAlpha})`;
+            ctx.lineWidth = window.innerWidth > 768 ? 3 : 2;
+            ctx.shadowBlur = 20;
+            ctx.shadowColor = '#d4af37';
+            ctx.beginPath();
+            ctx.moveTo(lightningBranches[0].x, lightningBranches[0].y);
+            for (let i = 1; i < lightningBranches.length; i++) {
+              ctx.lineTo(lightningBranches[i].x, lightningBranches[i].y);
+            }
+            ctx.stroke();
+            ctx.shadowBlur = 0; // 초기화
+          }
+
+          flashAlpha -= 0.08; // 서서히 사라짐
+        }
+      } else {
+        // 서브 창이 열려있을 때는 번개 데이터 초기화
+        flashAlpha = 0;
+        lightningBranches = [];
+      }
+
+      requestAnimationFrame(animateLightning);
+    }
+    animateLightning();
+    // ----------------------------
+
     // 엔터키 제출 처리
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
@@ -632,6 +738,11 @@
     }
 
     function jumpToSlide(n) {
+      currentSlide = n;
+      showShieldOrSlide(n); // 내부 헬퍼 역할
+    }
+
+    function showShieldOrSlide(n) {
       currentSlide = n;
       showSlide(n);
     }
