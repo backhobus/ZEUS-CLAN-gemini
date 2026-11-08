@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZEUS CLAN - 모던워쉽</title>
-  <!-- 탭 아이콘 (두 번째 첨부 이미지 사용) -->
-  <link rel="icon" href="ZEUS_web.png" type="image/png">
+  <!-- 탭 아이콘 (ZEUS _web.jpg Base64 삽입) -->
+  <link rel="icon" href="data:image/jpeg;base64, 여기에_ZEUS_web_Base64_문자열을_넣으세요" type="image/jpeg">
   <!-- FontAwesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
@@ -78,6 +78,7 @@
       border-radius: 50%;
       box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
       margin-bottom: 15px;
+      object-fit: cover;
     }
 
     .since-text {
@@ -362,7 +363,7 @@
     /* Mobile Responsive Customization */
     @media (max-width: 600px) {
       .input-box::placeholder {
-        font-size: 0.78rem; /* 모바일 연령대 회색문구 가시성 확보 */
+        font-size: 0.78rem;
       }
     }
   </style>
@@ -371,7 +372,8 @@
 
   <div class="container">
     <header>
-      <img src="ZEUS.png" alt="ZEUS Clan Logo" class="logo-img">
+      <!-- ZEUS_2.jpg Base64 삽입 위치 -->
+      <img src="data:image/jpeg;base64, 여기에_ZEUS_2_Base64_문자열을_넣으세요" alt="ZEUS Clan Logo" class="logo-img">
       <div class="since-text">Since 2020</div>
       <div class="title-comment">
         <span class="text-hero">영웅</span>, <span class="text-legend">전설</span> 타이틀 누적 299개 배출
@@ -473,16 +475,15 @@
       </div>
     </div>
 
-    <!-- 명예의 전당 섹션 -->
+    <!-- 명예의 전당 섹션 (랭커 닉네임 텍스트 삭제 완료) -->
     <div id="hallCard" class="section-card">
       <div class="slide-title"><i class="fa-solid fa-trophy" style="color: var(--gold-primary);"></i> ZEUS 명예의 전당</div>
       <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">클랜을 빛낸 명예로운 유저 기록 카드입니다.</p>
       
       <div class="hall-gallery" id="hallGallery">
-        <!-- 관리자가 추후 이미지/정보를 추가할 수 있는 레이아웃 공간 -->
+        <!-- 관리자가 추후 이미지를 추가할 수 있는 공간 -->
         <div class="hall-card">
           <div style="height: 150px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #64748b; border-radius: 4px;">이미지 준비중</div>
-          <p style="margin-top: 8px; font-weight: 600;">랭커 닉네임</p>
         </div>
       </div>
       <button class="btn-prev" style="margin-top: 20px; width: 100%;" onclick="closeHallOfFame()">닫기</button>
@@ -494,7 +495,6 @@
   </div>
 
   <script>
-    // 구글 Apps Script Web App URL (배포 후 아래에 본인의 Web App URL 입력)
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzTnIMfs4aGpEF-ukH36z3NPo834F4iJAAUMwSGLl7POD_cFx7_VjNY2CNSKrD6CjbTgg/exec";
 
     let currentSlide = 1;
@@ -539,7 +539,6 @@
     }
 
     function updateProgress(slideNum) {
-      // 1번 슬라이드: 0%, 5번 슬라이드: 100%
       let percentage = 0;
       if (slideNum >= 1 && slideNum <= 5) {
         percentage = ((slideNum - 1) / 4) * 100;
@@ -567,7 +566,6 @@
     }
 
     function formatUid(input) {
-      // 알파벳 소문자 자동 대문자 치환
       input.value = input.value.toUpperCase();
     }
 
@@ -587,11 +585,7 @@
       } else if (n === 2) {
         const uid = document.getElementById('inputUid').value.trim();
         if (!uid) { showError('err2', '답변을 입력해 주세요.'); return; }
-        // UID 조건 검증
-        // 1. 오로지 숫자나 알파벳 대문자만
-        // 2. 'O' 글자 미포함
-        // 3. 15~16 글자
-        const uidRegex = /^[A-NP-Z0-9]{15,16}$/;
+        const uidRegex = /^[A-NP-Z0-9]{15,16}\$/;
         if (!uidRegex.test(uid)) {
           showError('err2', '게임 UID를 다시 확인해주세요.');
           return;
@@ -601,7 +595,6 @@
       } else if (n === 3) {
         const age = document.getElementById('inputAge').value.trim();
         if (!age) { showError('err3', '답변을 입력해 주세요.'); return; }
-        // 숫자 하나 이상 포함 검증
         if (!/\d/.test(age)) {
           showError('err3', '숫자를 포함해 주세요.');
           return;
@@ -636,40 +629,4 @@
       const container = document.getElementById('reviewContent');
       const items = [
         { q: '게임 닉네임', a: formData.nickname, slide: 1 },
-        { q: '게임 UID', a: formData.uid, slide: 2 },
-        { q: '연령대', a: formData.age, slide: 3 },
-        { q: '가입 사유', a: formData.reason, slide: 4 },
-        { q: '토너먼트 도전 의향', a: formData.discord, slide: 5 }
-      ];
-
-      container.innerHTML = items.map(item => `
-        <div class="review-item">
-          <div>
-            <div class="review-q">${item.q}</div>
-            <div class="review-a">${item.a}</div>
-          </div>
-          <button class="btn-edit" onclick="jumpToSlide(${item.slide})">수정</button>
-        </div>
-      `).join('');
-    }
-
-    function submitApplication() {
-      // 구글 Apps Script로 데이터 전송
-      fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      })
-      .then(() => {
-        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-        document.getElementById('slideComplete').classList.add('active');
-      })
-      .catch(err => {
-        alert('신청 전송 중 오류가 발생했습니다.');
-        console.error(err);
-      });
-    }
-  </script>
-</body>
-</html>
+        { q: '게임 UID', a
