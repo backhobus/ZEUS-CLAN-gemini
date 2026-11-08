@@ -6,7 +6,7 @@
   <title>ZEUS CLAN - 모던워쉽</title>
   <!-- 탭 아이콘 -->
   <link rel="icon" href="ZEUSweb.png" type="image/png">
-  <!-- FontAwesome & Google Fonts (Orbitron & Noto Sans KR 적용) -->
+  <!-- FontAwesome & Google Fonts (Orbitron & Noto Sans KR) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Noto+Sans+KR:wght@300;400;600;800&display=swap" rel="stylesheet">
   
@@ -16,9 +16,11 @@
       --card-bg: rgba(15, 18, 25, 0.95);
       --gold-primary: #d4af37;
       --gold-accent: #f39c12;
+      --title-color: #f4e6b0; /* 이미지 속 ZEUS CLAN 아이보리-골드 색상 */
       --hero-subtext: #94a3b8;
-      --purple-legend: #a855f7;
-      --yellow-hero: #eab308;
+      --purple-legend: #a855f7; /* 전설: 보라색 */
+      --yellow-hero: #eab308;   /* 영웅: 노란색 */
+      --normal-text: #cbd5e1;   /* 나머지 텍스트: 은회색 (노란색 제외) */
       --discord-blue: rgba(88, 101, 242, 0.45);
       --discord-blue-hover: rgba(88, 101, 242, 0.7);
       --danger-red: #ef4444;
@@ -83,7 +85,7 @@
       position: relative;
     }
 
-    /* Header Styling (이미지 레이아웃 반영) */
+    /* Header Styling (이미지와 동일한 포맷 및 색상 적용) */
     header {
       text-align: center;
       margin-top: 10px;
@@ -98,7 +100,7 @@
       width: 140px;
       height: 140px;
       border-radius: 50%;
-      margin-bottom: 18px;
+      margin-bottom: 20px;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -115,12 +117,12 @@
       display: block;
     }
 
-    /* 양옆 장식선이 들어간 SINCE 2020 */
+    /* SINCE 2020: 색상 및 양옆 장식선 */
     .since-text {
       font-family: 'Orbitron', sans-serif;
       font-size: 0.95rem;
       letter-spacing: 4px;
-      color: var(--hero-subtext);
+      color: var(--gold-primary);
       margin-bottom: 12px;
       display: flex;
       align-items: center;
@@ -132,27 +134,37 @@
       display: inline-block;
       width: 35px;
       height: 1px;
-      background-color: var(--hero-subtext);
-      opacity: 0.6;
+      background-color: var(--gold-primary);
+      opacity: 0.5;
     }
 
-    /* 각진 테크니컬 폰트(Orbitron)가 적용된 대형 ZEUS CLAN 타이틀 */
+    /* ZEUS CLAN 대형 타이틀 색상 및 폰트 */
     .clan-title {
       font-family: 'Orbitron', sans-serif;
-      font-size: 2.8rem;
+      font-size: 2.9rem;
       font-weight: 900;
-      color: var(--gold-primary);
-      letter-spacing: 4px;
-      margin-bottom: 10px;
-      text-shadow: 0 0 20px rgba(212, 175, 55, 0.35);
+      color: var(--title-color);
+      letter-spacing: 5px;
+      margin-bottom: 12px;
+      text-shadow: 0 0 20px rgba(244, 230, 176, 0.25);
       line-height: 1.1;
     }
 
+    /* 타이틀 하단 설명 색상 지정 */
     .title-comment {
       font-size: 1.05rem;
       font-weight: 500;
-      color: #cbd5e1;
+      color: var(--normal-text);
       letter-spacing: 0.5px;
+    }
+
+    .text-hero {
+      color: var(--yellow-hero);
+      font-weight: 700;
+    }
+    .text-legend {
+      color: var(--purple-legend);
+      font-weight: 700;
     }
 
     /* Nav Grid Structure */
@@ -405,7 +417,7 @@
       letter-spacing: 1px;
     }
 
-    /* 명예의 전당 갤러리 그리드 (3:2 비율 촘촘한 정렬) */
+    /* 명예의 전당 갤러리 그리드 (3:2 비율) */
     .hall-gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -446,7 +458,7 @@
       }
       .clan-title {
         font-size: 2.1rem;
-        letter-spacing: 2px;
+        letter-spacing: 3px;
       }
       .title-comment {
         font-size: 0.9rem;
@@ -482,7 +494,7 @@
       <div class="since-text">SINCE 2020</div>
       <div class="clan-title">ZEUS CLAN</div>
       <div class="title-comment">
-        영웅, 전설 타이틀 누적 299개 배출
+        <span class="text-hero">영웅</span>, <span class="text-legend">전설</span> 타이틀 누적 299개 배출
       </div>
     </header>
 
