@@ -16,13 +16,14 @@
       --card-bg: rgba(15, 18, 25, 0.95);
       --gold-primary: #d4af37;
       --gold-accent: #f39c12;
-      --title-color: #f4e6b0; /* 이미지 속 ZEUS CLAN 아이보리-골드 색상 */
+      --title-color: #f4e6b0;
       --hero-subtext: #94a3b8;
-      --purple-legend: #a855f7; /* 전설: 보라색 */
-      --yellow-hero: #eab308;   /* 영웅: 노란색 */
-      --normal-text: #cbd5e1;   /* 나머지 텍스트: 은회색 (노란색 제외) */
-      --discord-blue: rgba(88, 101, 242, 0.45);
-      --discord-blue-hover: rgba(88, 101, 242, 0.7);
+      --purple-legend: #a855f7;
+      --yellow-hero: #eab308;
+      --normal-text: #cbd5e1;
+      /* 디스코드 버튼 연한 투명 배경색 적용 */
+      --discord-blue: rgba(88, 101, 242, 0.22);
+      --discord-blue-hover: rgba(88, 101, 242, 0.45);
       --danger-red: #ef4444;
       --border-gold: rgba(212, 175, 55, 0.3);
     }
@@ -35,7 +36,6 @@
       overflow-wrap: break-word;
     }
 
-    /* 드래그 및 선택 금지 (입력창 제외) */
     body {
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -61,7 +61,6 @@
       user-select: text !important;
     }
 
-    /* 번개 효과 캔버스 배경 레이어 */
     #lightningCanvas {
       position: fixed;
       top: 0;
@@ -85,7 +84,6 @@
       position: relative;
     }
 
-    /* Header Styling (이미지와 동일한 포맷 및 색상 적용) */
     header {
       text-align: center;
       margin-top: 10px;
@@ -117,7 +115,6 @@
       display: block;
     }
 
-    /* SINCE 2020: 색상 및 양옆 장식선 */
     .since-text {
       font-family: 'Orbitron', sans-serif;
       font-size: 0.95rem;
@@ -138,7 +135,6 @@
       opacity: 0.5;
     }
 
-    /* ZEUS CLAN 대형 타이틀 색상 및 폰트 */
     .clan-title {
       font-family: 'Orbitron', sans-serif;
       font-size: 2.9rem;
@@ -150,7 +146,6 @@
       line-height: 1.1;
     }
 
-    /* 타이틀 하단 설명 색상 지정 */
     .title-comment {
       font-size: 1.05rem;
       font-weight: 500;
@@ -167,7 +162,6 @@
       font-weight: 700;
     }
 
-    /* Nav Grid Structure */
     .nav-grid {
       width: 100%;
       display: grid;
@@ -224,19 +218,20 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
+    /* 은은하고 밝게 바뀐 디스코드 버튼 */
     .btn-discord {
       background: var(--discord-blue);
-      border: 1px solid rgba(88, 101, 242, 0.4);
-      color: #ffffff;
-      backdrop-filter: blur(4px);
+      border: 1px solid rgba(88, 101, 242, 0.35);
+      color: #8b96f8;
+      backdrop-filter: blur(6px);
     }
     .btn-discord:hover {
       background: var(--discord-blue-hover);
-      border-color: rgba(88, 101, 242, 0.8);
-      box-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
+      border-color: rgba(88, 101, 242, 0.7);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(88, 101, 242, 0.35);
     }
 
-    /* Modal / Form Card Structure */
     .section-card {
       width: 100%;
       max-width: 600px;
@@ -252,7 +247,6 @@
       display: block;
     }
 
-    /* Progress Bar */
     .progress-container {
       width: 100%;
       background-color: rgba(255, 255, 255, 0.08);
@@ -269,7 +263,6 @@
       transition: width 0.4s ease-in-out;
     }
 
-    /* Slide Content */
     .slide {
       display: none;
     }
@@ -310,7 +303,6 @@
       display: none;
     }
 
-    /* Radio/Button Choice for Slide 5 */
     .choice-group {
       display: flex;
       gap: 15px;
@@ -334,7 +326,6 @@
       color: var(--gold-primary);
     }
 
-    /* Slide Navigation Footer Controls */
     .slide-footer {
       display: flex;
       gap: 12px;
@@ -378,7 +369,6 @@
       cursor: pointer;
     }
 
-    /* Slide 6 Review */
     .review-item {
       background: rgba(0, 0, 0, 0.4);
       border-radius: 10px;
@@ -400,7 +390,6 @@
       cursor: pointer;
     }
 
-    /* Complete Slide */
     .complete-box {
       text-align: center;
       padding: 30px 10px;
@@ -408,7 +397,6 @@
     .complete-main { font-size: 1.5rem; font-weight: 800; color: var(--gold-primary); margin-bottom: 10px; }
     .complete-sub { font-size: 1rem; color: #cbd5e1; margin-bottom: 25px; }
 
-    /* Footer */
     footer {
       margin-top: 30px;
       padding: 15px;
@@ -417,7 +405,6 @@
       letter-spacing: 1px;
     }
 
-    /* 명예의 전당 갤러리 그리드 (3:2 비율) */
     .hall-gallery {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -447,7 +434,6 @@
       display: block;
     }
 
-    /* Mobile Responsive Customization */
     @media (max-width: 600px) {
       .container {
         width: 100%;
@@ -483,7 +469,6 @@
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
 
-  <!-- 번개 효과 캔버스 -->
   <canvas id="lightningCanvas"></canvas>
 
   <div class="container">
@@ -498,7 +483,6 @@
       </div>
     </header>
 
-    <!-- 메인 네비게이션 버튼 (클릭 시 숨겨짐) -->
     <div class="nav-grid" id="navGrid">
       <button class="btn-main-apply" onclick="openApplyForm()">
         <i class="fa-solid fa-file-signature"></i> 가입신청서 작성
@@ -511,13 +495,11 @@
       </a>
     </div>
 
-    <!-- 가입 신청서 섹션 -->
     <div id="applyCard" class="section-card">
       <div class="progress-container">
         <div id="progressBar" class="progress-bar"></div>
       </div>
 
-      <!-- Slide 1 -->
       <div class="slide active" id="slide1">
         <div class="slide-title">게임에서 사용하는 닉네임을 알려주세요.</div>
         <input type="text" id="inputNickname" class="input-box" placeholder="닉네임 입력" onfocus="hideError('err1')">
@@ -528,7 +510,6 @@
         </div>
       </div>
 
-      <!-- Slide 2 -->
       <div class="slide" id="slide2">
         <div class="slide-title">게임 UID를 알려주세요.</div>
         <input type="text" id="inputUid" class="input-box" placeholder="예: 428BCBA023C04781" oninput="formatUid(this)" onfocus="hideError('err2')">
@@ -539,7 +520,6 @@
         </div>
       </div>
 
-      <!-- Slide 3 -->
       <div class="slide" id="slide3">
         <div class="slide-title">연령대를 알려주세요.</div>
         <input type="text" id="inputAge" class="input-box" placeholder="가입 절차를 위해서만 사용되며, 외부로 공유되지 않습니다." onfocus="hideError('err3')">
@@ -550,7 +530,6 @@
         </div>
       </div>
 
-      <!-- Slide 4 -->
       <div class="slide" id="slide4">
         <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요.</div>
         <input type="text" id="inputReason" class="input-box" placeholder="가입 사유 입력" onfocus="hideError('err4')">
@@ -561,7 +540,6 @@
         </div>
       </div>
 
-      <!-- Slide 5 -->
       <div class="slide" id="slide5">
         <div class="slide-title">디스코드에 참가하여 토너먼트에 도전할 의향이 있나요?</div>
         <div class="choice-group">
@@ -575,7 +553,6 @@
         </div>
       </div>
 
-      <!-- Slide 6 (마지막 확인) -->
       <div class="slide" id="slide6">
         <div class="slide-title">마지막으로 확인해주세요.</div>
         <div id="reviewContent"></div>
@@ -584,7 +561,6 @@
         </div>
       </div>
 
-      <!-- Slide Complete -->
       <div class="slide" id="slideComplete">
         <div class="complete-box">
           <div class="complete-main">신청이 완료되었어요.</div>
@@ -594,7 +570,6 @@
       </div>
     </div>
 
-    <!-- 명예의 전당 섹션 -->
     <div id="hallCard" class="section-card">
       <div class="slide-title"><i class="fa-solid fa-trophy" style="color: var(--gold-primary);"></i> ZEUS 명예의 전당</div>
       <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">ZEUS의 이름을 빛낸 함장들의 기록</p>
@@ -622,7 +597,6 @@
       discord: ''
     };
 
-    // --- 명예의 전당 이미지 구글 드라이브에서 자동 불러오기 ---
     function loadHallOfFameImages() {
       const gallery = document.getElementById('hallGallery');
       fetch(GAS_WEB_APP_URL)
@@ -644,7 +618,6 @@
         });
     }
 
-    // --- 배경 번개 효과 스크립트 ---
     const canvas = document.getElementById('lightningCanvas');
     const ctx = canvas.getContext('2d');
 
