@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ZEUS CLAN - 모던워쉽</title>
+  <!-- 탭 아이콘 (두 번째 첨부 이미지 사용) -->
+  <link rel="icon" href="ZEUS_web.jpg" type="image/jpeg">
+  <!-- FontAwesome & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;800&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #0b0e14;
+      --card-bg: rgba(20, 26, 38, 0.85);
+      --gold-primary: #d4af37;
+      --gold-accent: #f39c12;
+      --hero-subtext: #8e9aaf;
+      --purple-legend: #a855f7;
+      --yellow-hero: #eab308;
+      --discord-blue: rgba(88, 101, 242, 0.85);
+      --danger-red: #ef4444;
+      --border-gold: rgba(212, 175, 55, 0.3);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      word-break: keep-all;
+      overflow-wrap: break-word;
+    }
+
+    /* 드래그 및 선택 금지 (입력창 제외) */
+    body {
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      background: var(--bg-color);
+      color: #ffffff;
+      font-family: 'Noto Sans KR', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-image: radial-gradient(circle at 50% 20%, #1a233a 0%, #0b0e14 70%);
+    }
+
+    input, textarea {
+      -webkit-user-select: text !important;
+      -moz-user-select: text !important;
+      -ms-user-select: text !important;
+      user-select: text !important;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      padding: 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header Styling */
+    header {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 30px;
+    }
+
+    .logo-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+      margin-bottom: 15px;
+    }
+
+    .since-text {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      color: var(--hero-subtext);
+      margin-bottom: 8px;
+    }
+
+    .title-comment {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    .text-hero { color: var(--yellow-hero); font-weight: 800; }
+    .text-legend { color: var(--purple-legend); font-weight: 800; }
+
+    /* Nav Grid Structure (2줄 / 2:1:1 비율) */
+    .nav-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .btn-main-apply {
+      grid-column: span 2;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(243, 156, 18, 0.1));
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-primary);
+      padding: 18px;
+      font-size: 1.2rem;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-main-apply:hover {
+      background: rgba(212, 175, 55, 0.3);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    }
+
+    .btn-sub {
+      padding: 14px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-hall {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+    }
+    .btn-hall:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-discord {
+      background: var(--discord-blue);
+      border: 1px solid rgba(88, 101, 242, 0.5);
+      color: #ffffff;
+    }
+    .btn-discord:hover {
+      background: rgba(88, 101, 242, 1);
+      box-shadow: 0 0 12px rgba(88, 101, 242, 0.5);
+    }
+
+    /* Modal / Form Card Structure */
+    .section-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border-gold);
+      border-radius: 16px;
+      padding: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    .section-card.active {
+      display: block;
+    }
+
+    /* Progress Bar */
+    .progress-container {
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.1);
+      height: 8px;
+      border-radius: 4px;
+      margin-bottom: 25px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--gold-primary), var(--gold-accent));
+      transition: width 0.4s ease-in-out;
+    }
+
+    /* Slide Content */
+    .slide {
+      display: none;
+    }
+    .slide.active {
+      display: block;
+    }
+
+    .slide-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: #f1f5f9;
+    }
+
+    .input-box {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .input-box:focus {
+      border-color: var(--gold-primary);
+    }
+    .input-box::placeholder {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    .error-msg {
+      color: var(--danger-red);
+      font-size: 0.88rem;
+      margin-top: 8px;
+      display: none;
+    }
+
+    /* Radio/Button Choice for Slide 5 */
+    .choice-group {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .choice-btn {
+      flex: 1;
+      padding: 14px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .choice-btn.selected {
+      background: rgba(212, 175, 55, 0.2);
+      border-color: var(--gold-primary);
+      color: var(--gold-primary);
+    }
+
+    /* Slide Navigation Footer Controls */
+    .slide-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+    }
+    .btn-prev {
+      flex: 1;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #ffffff;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .btn-next {
+      flex: 9;
+      padding: 12px;
+      background: var(--gold-primary);
+      border: none;
+      color: #000000;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: background 0.3s;
+    }
+    .btn-next:hover {
+      background: var(--gold-accent);
+    }
+    .btn-submit-final {
+      width: 100%;
+      padding: 14px;
+      background: var(--gold-primary);
+      border: none;
+      color: #000;
+      font-size: 1.1rem;
+      font-weight: 800;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* Slide 6 Review */
+    .review-item {
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .review-q { font-size: 0.85rem; color: #94a3b8; margin-bottom: 4px; }
+    .review-a { font-size: 1rem; color: #ffffff; font-weight: 600; }
+    .btn-edit {
+      background: transparent;
+      border: 1px solid var(--gold-primary);
+      color: var(--gold-primary);
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    /* Complete Slide */
+    .complete-box {
+      text-align: center;
+      padding: 40px 10px;
+    }
+    .complete-main { font-size: 1.5rem; font-weight: 800; color: var(--gold-primary); margin-bottom: 12px; }
+    .complete-sub { font-size: 1rem; color: #cbd5e1; }
+
+    /* Footer */
+    footer {
+      margin-top: 40px;
+      padding: 20px;
+      font-size: 0.85rem;
+      color: #64748b;
+      letter-spacing: 1px;
+    }
+
+    /* Hall of Fame Placeholder */
+    .hall-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .hall-card {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .hall-card img {
+      width: 100%;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    /* Mobile Responsive Customization */
+    @media (max-width: 600px) {
+      .input-box::placeholder {
+        font-size: 0.78rem; /* 모바일 연령대 회색문구 가시성 확보 */
+      }
+    }
+  </style>
+</head>
+<body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
+
+  <div class="container">
+    <header>
+      <img src="ZEUS.jpg" alt="ZEUS Clan Logo" class="logo-img">
+      <div class="since-text">Since 2020</div>
+      <div class="title-comment">
+        <span class="text-hero">영웅</span>, <span class="text-legend">전설</span> 타이틀 누적 299개 배출
+      </div>
+    </header>
+
+    <!-- 메인 네비게이션 버튼 (2:1:1 배치) -->
+    <div class="nav-grid">
+      <button class="btn-main-apply" onclick="openApplyForm()">
+        <i class="fa-solid fa-file-signature"></i> 가입신청서 작성
+      </button>
+      <button class="btn-sub btn-hall" onclick="openHallOfFame()">
+        <i class="fa-solid fa-trophy"></i> 명예의 전당
+      </button>
+      <a href="https://discord.gg/Bd79ZUXdm2" target="_blank" class="btn-sub btn-discord">
+        <i class="fa-brands fa-discord"></i> 공식 디스코드
+      </a>
+    </div>
+
+    <!-- 가입 신청서 섹션 -->
+    <div id="applyCard" class="section-card">
+      <div class="progress-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+
+      <!-- Slide 1 -->
+      <div class="slide active" id="slide1">
+        <div class="slide-title">게임에서 사용하는 닉네임을 알려주세요.</div>
+        <input type="text" id="inputNickname" class="input-box" placeholder="닉네임 입력" onfocus="hideError('err1')">
+        <div id="err1" class="error-msg">답변을 입력해 주세요.</div>
+        <div class="slide-footer">
+          <button class="btn-prev" onclick="closeForm()">취소</button>
+          <button class="btn-next" onclick="nextSlide(1)">다음</button>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide" id="slide2">
+        <div class="slide-title">게임 UID를 알려주세요.</div>
+        <input type="text" id="inputUid" class="input-box" placeholder="예: 428BCBA023C04781" oninput="formatUid(this)" onfocus="hideError('err2')">
+        <div id="err2" class="error-msg">게임 UID를 다시 확인해주세요.</div>
+        <div class="slide-footer">
+          <button class="btn-prev" onclick="prevSlide(2)">이전</button>
+          <button class="btn-next" onclick="nextSlide(2)">다음</button>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide" id="slide3">
+        <div class="slide-title">연령대를 알려주세요.</div>
+        <input type="text" id="inputAge" class="input-box" placeholder="가입 절차를 위해서만 사용되며, 외부로 공유되지 않습니다." onfocus="hideError('err3')">
+        <div id="err3" class="error-msg">숫자를 포함해 주세요.</div>
+        <div class="slide-footer">
+          <button class="btn-prev" onclick="prevSlide(3)">이전</button>
+          <button class="btn-next" onclick="nextSlide(3)">다음</button>
+        </div>
+      </div>
+
+      <!-- Slide 4 -->
+      <div class="slide" id="slide4">
+        <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요.</div>
+        <input type="text" id="inputReason" class="input-box" placeholder="가입 사유 입력" onfocus="hideError('err4')">
+        <div id="err4" class="error-msg">답변을 입력해 주세요.</div>
+        <div class="slide-footer">
+          <button class="btn-prev" onclick="prevSlide(4)">이전</button>
+          <button class="btn-next" onclick="nextSlide(4)">다음</button>
+        </div>
+      </div>
+
+      <!-- Slide 5 -->
+      <div class="slide" id="slide5">
+        <div class="slide-title">디스코드에 참가하여 토너먼트에 도전할 의향이 있나요?</div>
+        <div class="choice-group">
+          <div class="choice-btn" id="choiceYes" onclick="selectDiscordChoice('예')">예</div>
+          <div class="choice-btn" id="choiceNo" onclick="selectDiscordChoice('아니요')">아니요</div>
+        </div>
+        <div id="err5" class="error-msg">답변을 입력해 주세요.</div>
+        <div class="slide-footer">
+          <button class="btn-prev" onclick="prevSlide(5)">이전</button>
+          <button class="btn-next" onclick="nextSlide(5)">다음</button>
+        </div>
+      </div>
+
+      <!-- Slide 6 (마지막 확인) -->
+      <div class="slide" id="slide6">
+        <div class="slide-title">마지막으로 확인해주세요.</div>
+        <div id="reviewContent"></div>
+        <div class="slide-footer" style="margin-top: 20px;">
+          <button class="btn-submit-final" onclick="submitApplication()">가입 신청하기</button>
+        </div>
+      </div>
+
+      <!-- Slide Complete -->
+      <div class="slide" id="slideComplete">
+        <div class="complete-box">
+          <div class="complete-main">신청이 완료되었어요.</div>
+          <div class="complete-sub">가입안내방에서 매니저님 확인을 기다려주세요.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 명예의 전당 섹션 -->
+    <div id="hallCard" class="section-card">
+      <div class="slide-title"><i class="fa-solid fa-trophy" style="color: var(--gold-primary);"></i> ZEUS 명예의 전당</div>
+      <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">클랜을 빛낸 명예로운 유저 기록 카드입니다.</p>
+      
+      <div class="hall-gallery" id="hallGallery">
+        <!-- 관리자가 추후 이미지/정보를 추가할 수 있는 레이아웃 공간 -->
+        <div class="hall-card">
+          <div style="height: 150px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; color: #64748b; border-radius: 4px;">이미지 준비중</div>
+          <p style="margin-top: 8px; font-weight: 600;">랭커 닉네임</p>
+        </div>
+      </div>
+      <button class="btn-prev" style="margin-top: 20px; width: 100%;" onclick="closeHallOfFame()">닫기</button>
+    </div>
+
+    <footer>
+      ZEUS CLAN · ALL RIGHTS RESERVED
+    </footer>
+  </div>
+
+  <script>
+    // 구글 Apps Script Web App URL (배포 후 아래에 본인의 Web App URL 입력)
+    const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzTnIMfs4aGpEF-ukH36z3NPo834F4iJAAUMwSGLl7POD_cFx7_VjNY2CNSKrD6CjbTgg/exec";
+
+    let currentSlide = 1;
+    let formData = {
+      nickname: '',
+      uid: '',
+      age: '',
+      reason: '',
+      discord: ''
+    };
+
+    // 엔터키 제출 처리
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        const activeCard = document.getElementById('applyCard');
+        if (activeCard.classList.contains('active')) {
+          if (currentSlide >= 1 && currentSlide <= 5) {
+            nextSlide(currentSlide);
+          }
+        }
+      }
+    });
+
+    function openApplyForm() {
+      document.getElementById('hallCard').classList.remove('active');
+      document.getElementById('applyCard').classList.add('active');
+      currentSlide = 1;
+      showSlide(1);
+    }
+
+    function openHallOfFame() {
+      document.getElementById('applyCard').classList.remove('active');
+      document.getElementById('hallCard').classList.add('active');
+    }
+
+    function closeHallOfFame() {
+      document.getElementById('hallCard').classList.remove('active');
+    }
+
+    function closeForm() {
+      document.getElementById('applyCard').classList.remove('active');
+    }
+
+    function updateProgress(slideNum) {
+      // 1번 슬라이드: 0%, 5번 슬라이드: 100%
+      let percentage = 0;
+      if (slideNum >= 1 && slideNum <= 5) {
+        percentage = ((slideNum - 1) / 4) * 100;
+      } else if (slideNum === 6) {
+        percentage = 100;
+      }
+      document.getElementById('progressBar').style.width = percentage + '%';
+    }
+
+    function showSlide(slideNum) {
+      document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+      const target = document.getElementById('slide' + slideNum);
+      if (target) target.classList.add('active');
+      updateProgress(slideNum);
+    }
+
+    function hideError(errId) {
+      document.getElementById(errId).style.display = 'none';
+    }
+
+    function showError(errId, text) {
+      const el = document.getElementById(errId);
+      if (text) el.innerText = text;
+      el.style.display = 'block';
+    }
+
+    function formatUid(input) {
+      // 알파벳 소문자 자동 대문자 치환
+      input.value = input.value.toUpperCase();
+    }
+
+    function selectDiscordChoice(val) {
+      formData.discord = val;
+      document.getElementById('choiceYes').classList.toggle('selected', val === '예');
+      document.getElementById('choiceNo').classList.toggle('selected', val === '아니요');
+      hideError('err5');
+    }
+
+    function nextSlide(n) {
+      if (n === 1) {
+        const val = document.getElementById('inputNickname').value.trim();
+        if (!val) { showError('err1', '답변을 입력해 주세요.'); return; }
+        formData.nickname = val;
+        currentSlide = 2;
+      } else if (n === 2) {
+        const uid = document.getElementById('inputUid').value.trim();
+        if (!uid) { showError('err2', '답변을 입력해 주세요.'); return; }
+        // UID 조건 검증
+        // 1. 오로지 숫자나 알파벳 대문자만
+        // 2. 'O' 글자 미포함
+        // 3. 15~16 글자
+        const uidRegex = /^[A-NP-Z0-9]{15,16}$/;
+        if (!uidRegex.test(uid)) {
+          showError('err2', '게임 UID를 다시 확인해주세요.');
+          return;
+        }
+        formData.uid = uid;
+        currentSlide = 3;
+      } else if (n === 3) {
+        const age = document.getElementById('inputAge').value.trim();
+        if (!age) { showError('err3', '답변을 입력해 주세요.'); return; }
+        // 숫자 하나 이상 포함 검증
+        if (!/\d/.test(age)) {
+          showError('err3', '숫자를 포함해 주세요.');
+          return;
+        }
+        formData.age = age;
+        currentSlide = 4;
+      } else if (n === 4) {
+        const reason = document.getElementById('inputReason').value.trim();
+        if (!reason) { showError('err4', '답변을 입력해 주세요.'); return; }
+        formData.reason = reason;
+        currentSlide = 5;
+      } else if (n === 5) {
+        if (!formData.discord) { showError('err5', '답변을 입력해 주세요.'); return; }
+        renderReview();
+        currentSlide = 6;
+      }
+
+      showSlide(currentSlide);
+    }
+
+    function prevSlide(n) {
+      currentSlide = n - 1;
+      showSlide(currentSlide);
+    }
+
+    function jumpToSlide(n) {
+      currentSlide = n;
+      showSlide(n);
+    }
+
+    function renderReview() {
+      const container = document.getElementById('reviewContent');
+      const items = [
+        { q: '게임 닉네임', a: formData.nickname, slide: 1 },
+        { q: '게임 UID', a: formData.uid, slide: 2 },
+        { q: '연령대', a: formData.age, slide: 3 },
+        { q: '가입 사유', a: formData.reason, slide: 4 },
+        { q: '토너먼트 도전 의향', a: formData.discord, slide: 5 }
+      ];
+
+      container.innerHTML = items.map(item => `
+        <div class="review-item">
+          <div>
+            <div class="review-q">${item.q}</div>
+            <div class="review-a">${item.a}</div>
+          </div>
+          <button class="btn-edit" onclick="jumpToSlide(${item.slide})">수정</button>
+        </div>
+      `).join('');
+    }
+
+    function submitApplication() {
+      // 구글 Apps Script로 데이터 전송
+      fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      })
+      .then(() => {
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.getElementById('slideComplete').classList.add('active');
+      })
+      .catch(err => {
+        alert('신청 전송 중 오류가 발생했습니다.');
+        console.error(err);
+      });
+    }
+  </script>
+</body>
+</html>
