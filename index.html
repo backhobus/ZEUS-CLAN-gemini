@@ -4,7 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ZEUS CLAN - 모던워쉽</title>
+  <!-- 탭 아이콘 -->
   <link rel="icon" href="ZEUSweb.png" type="image/png">
+  <!-- FontAwesome & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@700;900&family=Noto+Sans+KR:wght@300;400;600;800&display=swap" rel="stylesheet">
   
@@ -31,6 +33,7 @@
       overflow-wrap: break-word;
     }
 
+    /* 드래그 및 선택 금지 (입력창 제외) */
     body {
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -56,6 +59,7 @@
       user-select: text !important;
     }
 
+    /* 번개 효과 캔버스 배경 레이어 */
     #lightningCanvas {
       position: fixed;
       top: 0;
@@ -79,6 +83,7 @@
       position: relative;
     }
 
+    /* Header Styling */
     header {
       text-align: center;
       margin-top: 10px;
@@ -139,6 +144,7 @@
     .text-hero { color: var(--yellow-hero); font-weight: 800; }
     .text-legend { color: var(--purple-legend); font-weight: 800; }
 
+    /* Nav Grid Structure */
     .nav-grid {
       width: 100%;
       display: grid;
@@ -206,6 +212,7 @@
       box-shadow: 0 0 20px rgba(88, 101, 242, 0.5);
     }
 
+    /* Modal / Form Card Structure */
     .section-card {
       width: 100%;
       background: var(--card-bg);
@@ -220,6 +227,7 @@
       display: block;
     }
 
+    /* Progress Bar */
     .progress-container {
       width: 100%;
       background-color: rgba(255, 255, 255, 0.08);
@@ -236,6 +244,7 @@
       transition: width 0.4s ease-in-out;
     }
 
+    /* Slide Content */
     .slide {
       display: none;
     }
@@ -276,6 +285,7 @@
       display: none;
     }
 
+    /* Radio/Button Choice for Slide 5 */
     .choice-group {
       display: flex;
       gap: 15px;
@@ -299,6 +309,7 @@
       color: var(--gold-primary);
     }
 
+    /* Slide Navigation Footer Controls */
     .slide-footer {
       display: flex;
       gap: 12px;
@@ -342,6 +353,7 @@
       cursor: pointer;
     }
 
+    /* Slide 6 Review */
     .review-item {
       background: rgba(0, 0, 0, 0.4);
       border-radius: 10px;
@@ -363,6 +375,7 @@
       cursor: pointer;
     }
 
+    /* Complete Slide */
     .complete-box {
       text-align: center;
       padding: 30px 10px;
@@ -370,6 +383,7 @@
     .complete-main { font-size: 1.5rem; font-weight: 800; color: var(--gold-primary); margin-bottom: 10px; }
     .complete-sub { font-size: 1rem; color: #cbd5e1; margin-bottom: 25px; }
 
+    /* Footer */
     footer {
       margin-top: 30px;
       padding: 15px;
@@ -378,13 +392,13 @@
       letter-spacing: 1px;
     }
 
-    /* 명예의 전당 갤러리 그리드 */
+    /* 명예의 전당 갤러리 그리드 (3:2 가로 비율 및 이름 숨김 적용) */
     .hall-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 15px;
       margin-top: 20px;
-      max-height: 400px;
+      max-height: 450px;
       overflow-y: auto;
     }
     .hall-card {
@@ -396,11 +410,13 @@
     }
     .hall-card img {
       width: 100%;
-      height: 160px;
+      aspect-ratio: 3 / 2; /* 3:2 가로가 긴 비율 설정 */
       border-radius: 6px;
       object-fit: cover;
+      display: block;
     }
 
+    /* Mobile Responsive Customization */
     @media (max-width: 600px) {
       .container {
         width: 100%;
@@ -424,11 +440,15 @@
         padding: 14px;
         font-size: 1rem;
       }
+      .input-box::placeholder {
+        font-size: 0.78rem;
+      }
     }
   </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
 
+  <!-- 번개 효과 캔버스 -->
   <canvas id="lightningCanvas"></canvas>
 
   <div class="container">
@@ -443,6 +463,7 @@
       </div>
     </header>
 
+    <!-- 메인 네비게이션 버튼 (클릭 시 숨겨짐) -->
     <div class="nav-grid" id="navGrid">
       <button class="btn-main-apply" onclick="openApplyForm()">
         <i class="fa-solid fa-file-signature"></i> 가입신청서 작성
@@ -461,6 +482,7 @@
         <div id="progressBar" class="progress-bar"></div>
       </div>
 
+      <!-- Slide 1 -->
       <div class="slide active" id="slide1">
         <div class="slide-title">게임에서 사용하는 닉네임을 알려주세요.</div>
         <input type="text" id="inputNickname" class="input-box" placeholder="닉네임 입력" onfocus="hideError('err1')">
@@ -471,6 +493,7 @@
         </div>
       </div>
 
+      <!-- Slide 2 -->
       <div class="slide" id="slide2">
         <div class="slide-title">게임 UID를 알려주세요.</div>
         <input type="text" id="inputUid" class="input-box" placeholder="예: 428BCBA023C04781" oninput="formatUid(this)" onfocus="hideError('err2')">
@@ -481,6 +504,7 @@
         </div>
       </div>
 
+      <!-- Slide 3 -->
       <div class="slide" id="slide3">
         <div class="slide-title">연령대를 알려주세요.</div>
         <input type="text" id="inputAge" class="input-box" placeholder="가입 절차를 위해서만 사용되며, 외부로 공유되지 않습니다." onfocus="hideError('err3')">
@@ -491,6 +515,7 @@
         </div>
       </div>
 
+      <!-- Slide 4 -->
       <div class="slide" id="slide4">
         <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요.</div>
         <input type="text" id="inputReason" class="input-box" placeholder="가입 사유 입력" onfocus="hideError('err4')">
@@ -501,6 +526,7 @@
         </div>
       </div>
 
+      <!-- Slide 5 -->
       <div class="slide" id="slide5">
         <div class="slide-title">디스코드에 참가하여 토너먼트에 도전할 의향이 있나요?</div>
         <div class="choice-group">
@@ -514,6 +540,7 @@
         </div>
       </div>
 
+      <!-- Slide 6 (마지막 확인) -->
       <div class="slide" id="slide6">
         <div class="slide-title">마지막으로 확인해주세요.</div>
         <div id="reviewContent"></div>
@@ -522,6 +549,7 @@
         </div>
       </div>
 
+      <!-- Slide Complete -->
       <div class="slide" id="slideComplete">
         <div class="complete-box">
           <div class="complete-main">신청이 완료되었어요.</div>
@@ -531,7 +559,7 @@
       </div>
     </div>
 
-    <!-- 명예의 전당 섹션 (구글 드라이브 연동 자동 로드) -->
+    <!-- 명예의 전당 섹션 -->
     <div id="hallCard" class="section-card">
       <div class="slide-title"><i class="fa-solid fa-trophy" style="color: var(--gold-primary);"></i> ZEUS 명예의 전당</div>
       <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">ZEUS의 이름을 빛낸 함장들의 기록</p>
@@ -559,7 +587,7 @@
       discord: ''
     };
 
-    // --- 명예의 전당 이미지 구글 드라이브에서 자동 불러오기 ---
+    // --- 명예의 전당 이미지 구글 드라이브에서 자동 불러오기 (이름 숨김 처리) ---
     function loadHallOfFameImages() {
       const gallery = document.getElementById('hallGallery');
       fetch(GAS_WEB_APP_URL)
@@ -569,16 +597,15 @@
             gallery.innerHTML = data.images.map(img => `
               <div class="hall-card">
                 <img src="${img.url}" alt="${img.name}" loading="lazy">
-                <p style="margin-top: 8px; font-weight: 600; font-size: 0.9rem; color: #f1f5f9;">${img.name.replace(/\.[^/.]+$/, "")}</p>
               </div>
             `).join('');
           } else {
-            gallery.innerHTML = `<div class="hall-card" style="color: #64748b; padding: 30px;">등록된 기록 이미지가 없습니다.</div>`;
+            gallery.innerHTML = `<div class="hall-card" style="color: #64748b; padding: 30px; grid-column: span 1;">등록된 기록 이미지가 없습니다.</div>`;
           }
         })
         .catch(err => {
           console.error(err);
-          gallery.innerHTML = `<div class="hall-card" style="color: var(--danger-red); padding: 30px;">이미지를 불러오지 못했습니다.</div>`;
+          gallery.innerHTML = `<div class="hall-card" style="color: var(--danger-red); padding: 30px; grid-column: span 1;">이미지를 불러오지 못했습니다.</div>`;
         });
     }
 
@@ -681,7 +708,7 @@
       document.getElementById('navGrid').style.display = 'none';
       document.getElementById('applyCard').classList.remove('active');
       document.getElementById('hallCard').classList.add('active');
-      loadHallOfFameImages(); // 명예의 전당 열릴 때 드라이브에서 자동 로드
+      loadHallOfFameImages();
     }
 
     function closeHallOfFame() {
@@ -750,7 +777,7 @@
         currentSlide = 3;
       } else if (n === 3) {
         const age = document.getElementById('inputAge').value.trim();
-        if (!age) { showError('err3', '답변을 입력해 주세요.'); return; }
+        if (-!age) { showError('err3', '답변을 입력해 주세요.'); return; }
         if (!/\d/.test(age)) {
           showError('err3', '숫자를 포함해 주세요.');
           return;
@@ -792,17 +819,6 @@
       ];
 
       container.innerHTML = items.map(item => `
-        <div class="hall-card"> <!-- 수정 -->
-          <div>
-            <div class="review-q">${item.q}</div>
-            <div class="review-a">${item.a}</div>
-          </div>
-          <button class="btn-edit" onclick="jumpToSlide(${item.slide})">수정</button>
-        </div>
-      `).join('');
-      
-      // 실제 reviewContent 바인딩 복구
-      document.getElementById('reviewContent').innerHTML = items.map(item => `
         <div class="review-item">
           <div>
             <div class="review-q">${item.q}</div>
