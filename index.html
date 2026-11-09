@@ -21,7 +21,6 @@
       --purple-legend: #a855f7;
       --yellow-hero: #eab308;
       --normal-text: #cbd5e1;
-      /* 디스코드 버튼 연한 투명 배경색 적용 */
       --discord-blue: rgba(88, 101, 242, 0.22);
       --discord-blue-hover: rgba(88, 101, 242, 0.45);
       --danger-red: #ef4444;
@@ -52,6 +51,7 @@
       background-image: radial-gradient(circle at 50% 20%, #12161f 0%, #05070a 80%);
       overflow-x: hidden;
       position: relative;
+      padding-bottom: 40px;
     }
 
     input, textarea {
@@ -74,7 +74,7 @@
     .container {
       width: 95%;
       max-width: 1200px;
-      padding: 20px 15px;
+      padding: 15px 15px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -86,8 +86,8 @@
 
     header {
       text-align: center;
-      margin-top: 10px;
-      margin-bottom: 25px;
+      margin-top: 5px;
+      margin-bottom: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -98,7 +98,7 @@
       width: 140px;
       height: 140px;
       border-radius: 50%;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       overflow: hidden;
       display: flex;
       align-items: center;
@@ -120,7 +120,7 @@
       font-size: 0.95rem;
       letter-spacing: 4px;
       color: var(--gold-primary);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -141,7 +141,7 @@
       font-weight: 900;
       color: var(--title-color);
       letter-spacing: 5px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       text-shadow: 0 0 20px rgba(244, 230, 176, 0.25);
       line-height: 1.1;
     }
@@ -162,13 +162,15 @@
       font-weight: 700;
     }
 
+    /* 버튼 배치 (이미지 비율 참고하여 아이콘 위, 텍스트 아래 세로 정렬 구조 적용) */
     .nav-grid {
       width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 15px;
-      margin-bottom: 20px;
-      max-width: 600px;
+      margin-bottom: 10px;
+      max-width: 800px;
+      transition: opacity 0.3s ease;
     }
 
     .btn-main-apply {
@@ -177,16 +179,20 @@
       background: linear-gradient(135deg, rgba(212, 175, 55, 0.18), rgba(243, 156, 18, 0.08));
       border: 1px solid var(--gold-primary);
       color: var(--gold-primary);
-      padding: 20px;
-      font-size: 1.3rem;
+      padding: 26px 20px;
+      font-size: 1.25rem;
       font-weight: 700;
       border-radius: 14px;
       cursor: pointer;
       transition: all 0.3s ease;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 12px;
+    }
+    .btn-main-apply i {
+      font-size: 1.8rem;
     }
 
     .btn-main-apply:hover {
@@ -196,17 +202,21 @@
 
     .btn-sub {
       width: 100%;
-      padding: 18px;
+      padding: 26px 20px;
       border-radius: 12px;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 600;
       cursor: pointer;
       text-decoration: none;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 10px;
+      gap: 12px;
       transition: all 0.3s ease;
+    }
+    .btn-sub i {
+      font-size: 1.8rem;
     }
 
     .btn-hall {
@@ -218,7 +228,6 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    /* 은은하고 밝게 바뀐 디스코드 버튼 */
     .btn-discord {
       background: var(--discord-blue);
       border: 1px solid rgba(88, 101, 242, 0.35);
@@ -232,9 +241,21 @@
       box-shadow: 0 0 20px rgba(88, 101, 242, 0.35);
     }
 
+    /* 화면 전환 애니메이션 정의 */
+    @keyframes cardFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .section-card {
       width: 100%;
-      max-width: 600px;
+      max-width: 800px;
       background: var(--card-bg);
       border: 1px solid var(--border-gold);
       border-radius: 16px;
@@ -245,6 +266,7 @@
 
     .section-card.active {
       display: block;
+      animation: cardFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .progress-container {
@@ -268,6 +290,7 @@
     }
     .slide.active {
       display: block;
+      animation: cardFadeIn 0.3s ease-out forwards;
     }
 
     .slide-title {
@@ -296,6 +319,12 @@
       font-size: 0.95rem;
     }
 
+    textarea.input-box {
+      resize: none;
+      height: 110px;
+      line-height: 1.5;
+    }
+
     .error-msg {
       color: var(--danger-red);
       font-size: 0.9rem;
@@ -319,6 +348,7 @@
       cursor: pointer;
       text-align: center;
       font-size: 1.1rem;
+      transition: all 0.2s ease;
     }
     .choice-btn.selected {
       background: rgba(212, 175, 55, 0.2);
@@ -341,6 +371,7 @@
       cursor: pointer;
       font-weight: 600;
       font-size: 1rem;
+      transition: background 0.2s;
     }
     .btn-next {
       flex: 9;
@@ -379,7 +410,7 @@
       align-items: center;
     }
     .review-q { font-size: 0.9rem; color: #94a3b8; margin-bottom: 4px; }
-    .review-a { font-size: 1.05rem; color: #ffffff; font-weight: 600; }
+    .review-a { font-size: 1.05rem; color: #ffffff; font-weight: 600; white-space: pre-wrap; }
     .btn-edit {
       background: transparent;
       border: 1px solid var(--gold-primary);
@@ -397,17 +428,23 @@
     .complete-main { font-size: 1.5rem; font-weight: 800; color: var(--gold-primary); margin-bottom: 10px; }
     .complete-sub { font-size: 1rem; color: #cbd5e1; margin-bottom: 25px; }
 
+    /* 페이지 맨 밑에 고정되는 푸터 스타일 */
     footer {
-      margin-top: 30px;
-      padding: 15px;
-      font-size: 0.85rem;
+      position: fixed;
+      bottom: 10px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 0.8rem;
       color: #475569;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
+      z-index: 10;
+      pointer-events: none;
     }
 
     .hall-gallery {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 12px;
       margin-top: 20px;
       max-height: 480px;
@@ -450,15 +487,12 @@
         font-size: 0.9rem;
       }
       .btn-main-apply {
-        padding: 16px;
-        font-size: 1.15rem;
+        padding: 20px 15px;
+        font-size: 1.1rem;
       }
       .btn-sub {
-        padding: 14px;
+        padding: 20px 15px;
         font-size: 1rem;
-      }
-      .input-box::placeholder {
-        font-size: 0.78rem;
       }
       .hall-gallery {
         grid-template-columns: repeat(2, 1fr);
@@ -495,11 +529,13 @@
       </a>
     </div>
 
+    <!-- 가입 신청서 섹션 -->
     <div id="applyCard" class="section-card">
       <div class="progress-container">
         <div id="progressBar" class="progress-bar"></div>
       </div>
 
+      <!-- Slide 1 -->
       <div class="slide active" id="slide1">
         <div class="slide-title">게임에서 사용하는 닉네임을 알려주세요.</div>
         <input type="text" id="inputNickname" class="input-box" placeholder="닉네임 입력" onfocus="hideError('err1')">
@@ -510,6 +546,7 @@
         </div>
       </div>
 
+      <!-- Slide 2 -->
       <div class="slide" id="slide2">
         <div class="slide-title">게임 UID를 알려주세요.</div>
         <input type="text" id="inputUid" class="input-box" placeholder="예: 428BCBA023C04781" oninput="formatUid(this)" onfocus="hideError('err2')">
@@ -520,6 +557,7 @@
         </div>
       </div>
 
+      <!-- Slide 3 -->
       <div class="slide" id="slide3">
         <div class="slide-title">연령대를 알려주세요.</div>
         <input type="text" id="inputAge" class="input-box" placeholder="가입 절차를 위해서만 사용되며, 외부로 공유되지 않습니다." onfocus="hideError('err3')">
@@ -530,9 +568,10 @@
         </div>
       </div>
 
+      <!-- Slide 4 -->
       <div class="slide" id="slide4">
-        <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요.</div>
-        <input type="text" id="inputReason" class="input-box" placeholder="가입 사유 입력" onfocus="hideError('err4')">
+        <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요. (Enter: 줄바꿈 / Ctrl+Enter: 다음)</div>
+        <textarea id="inputReason" class="input-box" placeholder="가입 사유 입력" onfocus="hideError('err4')"></textarea>
         <div id="err4" class="error-msg">답변을 입력해 주세요.</div>
         <div class="slide-footer">
           <button class="btn-prev" onclick="prevSlide(4)">이전</button>
@@ -540,6 +579,7 @@
         </div>
       </div>
 
+      <!-- Slide 5 -->
       <div class="slide" id="slide5">
         <div class="slide-title">디스코드에 참가하여 토너먼트에 도전할 의향이 있나요?</div>
         <div class="choice-group">
@@ -553,6 +593,7 @@
         </div>
       </div>
 
+      <!-- Slide 6 (마지막 확인) -->
       <div class="slide" id="slide6">
         <div class="slide-title">마지막으로 확인해주세요.</div>
         <div id="reviewContent"></div>
@@ -561,6 +602,7 @@
         </div>
       </div>
 
+      <!-- Slide Complete -->
       <div class="slide" id="slideComplete">
         <div class="complete-box">
           <div class="complete-main">신청이 완료되었어요.</div>
@@ -570,8 +612,9 @@
       </div>
     </div>
 
+    <!-- 명예의 전당 섹션 -->
     <div id="hallCard" class="section-card">
-      <div class="slide-title"><i class="fa-solid fa-trophy" style="color: var(--gold-primary);"></i> ZEUS 명예의 전당</div>
+      <div class="slide-title"><i class="fa-solid fa-trophy" style="color: var(--gold-primary);"></i> 명예의 전당</div>
       <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 20px;">ZEUS의 이름을 빛낸 함장들의 기록</p>
       
       <div class="hall-gallery" id="hallGallery">
@@ -579,11 +622,11 @@
       </div>
       <button class="btn-prev" style="margin-top: 20px; width: 100%;" onclick="closeHallOfFame()">닫기</button>
     </div>
-
-    <footer>
-      ZEUS CLAN · ALL RIGHTS RESERVED
-    </footer>
   </div>
+
+  <footer>
+    ZEUS CLAN · ALL RIGHTS RESERVED
+  </footer>
 
   <script>
     const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzTnIMfs4aGpEF-ukH36z3NPo834F4iJAAUMwSGLl7POD_cFx7_VjNY2CNSKrD6CjbTgg/exec";
@@ -697,7 +740,13 @@
       if (e.key === 'Enter') {
         const activeCard = document.getElementById('applyCard');
         if (activeCard.classList.contains('active')) {
-          if (currentSlide >= 1 && currentSlide <= 5) {
+          if (currentSlide === 4) {
+            if (e.ctrlKey) {
+              e.preventDefault();
+              nextSlide(4);
+            }
+          } else if (currentSlide >= 1 && currentSlide <= 5) {
+            e.preventDefault();
             nextSlide(currentSlide);
           }
         }
@@ -707,7 +756,9 @@
     function openApplyForm() {
       document.getElementById('navGrid').style.display = 'none';
       document.getElementById('hallCard').classList.remove('active');
-      document.getElementById('applyCard').classList.add('active');
+      
+      const applyCard = document.getElementById('applyCard');
+      applyCard.classList.add('active');
       currentSlide = 1;
       showSlide(1);
     }
@@ -715,7 +766,9 @@
     function openHallOfFame() {
       document.getElementById('navGrid').style.display = 'none';
       document.getElementById('applyCard').classList.remove('active');
-      document.getElementById('hallCard').classList.add('active');
+      
+      const hallCard = document.getElementById('hallCard');
+      hallCard.classList.add('active');
       loadHallOfFameImages();
     }
 
