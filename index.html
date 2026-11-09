@@ -170,7 +170,11 @@
       gap: 15px;
       margin-bottom: 10px;
       max-width: 800px;
-      transition: opacity 0.3s ease;
+    }
+
+    /* 로비(메인 메뉴) 진입 애니메이션 */
+    .nav-grid.fade-in {
+      animation: cardFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
     .btn-main-apply {
@@ -241,6 +245,7 @@
       box-shadow: 0 0 20px rgba(88, 101, 242, 0.35);
     }
 
+    /* 화면 전환 애니메이션 정의 */
     @keyframes cardFadeIn {
       from {
         opacity: 0;
@@ -566,7 +571,7 @@
         </div>
       </div>
 
-      <!-- Slide 4 (가입 사유 입력란: 부연설명 문구 및 placeholder 제거) -->
+      <!-- Slide 4 -->
       <div class="slide" id="slide4">
         <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요.</div>
         <textarea id="inputReason" class="input-box" onfocus="hideError('err4')"></textarea>
@@ -751,9 +756,12 @@
       }
     });
 
+    // 가입신청서 열기 (서브타이틀 숨김 처리로 상단 바짝 배치)
     function openApplyForm() {
-      document.getElementById('navGrid').style.display = 'none';
-      document.getElementById('headerTitleComment').style.display = 'block';
+      const nav = document.getElementById('navGrid');
+      nav.style.display = 'none';
+      nav.classList.remove('fade-in');
+      document.getElementById('headerTitleComment').style.display = 'none';
       document.getElementById('hallCard').classList.remove('active');
       
       const applyCard = document.getElementById('applyCard');
@@ -762,9 +770,11 @@
       showSlide(1);
     }
 
+    // 명예의 전당 열기 (서브타이틀 숨김 처리로 상단 바짝 배치)
     function openHallOfFame() {
-      document.getElementById('navGrid').style.display = 'none';
-      // 명예의 전당 진입 시 영웅/전설 서브문구를 숨겨 박스가 상단으로 바짝 붙도록 설정
+      const nav = document.getElementById('navGrid');
+      nav.style.display = 'none';
+      nav.classList.remove('fade-in');
       document.getElementById('headerTitleComment').style.display = 'none';
       document.getElementById('applyCard').classList.remove('active');
       
@@ -773,16 +783,26 @@
       loadHallOfFameImages();
     }
 
+    // 명예의 전당 ➔ 메인(로비) 복귀 (부드러운 애니메이션 적용)
     function closeHallOfFame() {
       document.getElementById('hallCard').classList.remove('active');
       document.getElementById('headerTitleComment').style.display = 'block';
-      document.getElementById('navGrid').style.display = 'grid';
+      const nav = document.getElementById('navGrid');
+      nav.style.display = 'grid';
+      nav.classList.remove('fade-in');
+      void nav.offsetWidth; // 리플로우 강제 후 애니메이션 재적용
+      nav.classList.add('fade-in');
     }
 
+    // 가입신청서 ➔ 메인(로비) 복귀 (부드러운 애니메이션 적용)
     function closeForm() {
       document.getElementById('applyCard').classList.remove('active');
       document.getElementById('headerTitleComment').style.display = 'block';
-      document.getElementById('navGrid').style.display = 'grid';
+      const nav = document.getElementById('navGrid');
+      nav.style.display = 'grid';
+      nav.classList.remove('fade-in');
+      void nav.offsetWidth; // 리플로우 강제 후 애니메이션 재적용
+      nav.classList.add('fade-in');
     }
 
     function updateProgress(slideNum) {
