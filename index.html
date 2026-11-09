@@ -92,6 +92,7 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
+      transition: opacity 0.3s ease;
     }
 
     .logo-container {
@@ -162,7 +163,6 @@
       font-weight: 700;
     }
 
-    /* 버튼 배치 (이미지 비율 참고하여 아이콘 위, 텍스트 아래 세로 정렬 구조 적용) */
     .nav-grid {
       width: 100%;
       display: grid;
@@ -241,7 +241,6 @@
       box-shadow: 0 0 20px rgba(88, 101, 242, 0.35);
     }
 
-    /* 화면 전환 애니메이션 정의 */
     @keyframes cardFadeIn {
       from {
         opacity: 0;
@@ -428,7 +427,6 @@
     .complete-main { font-size: 1.5rem; font-weight: 800; color: var(--gold-primary); margin-bottom: 10px; }
     .complete-sub { font-size: 1rem; color: #cbd5e1; margin-bottom: 25px; }
 
-    /* 페이지 맨 밑에 고정되는 푸터 스타일 */
     footer {
       position: fixed;
       bottom: 10px;
@@ -512,7 +510,7 @@
       </div>
       <div class="since-text">SINCE 2020</div>
       <div class="clan-title">ZEUS CLAN</div>
-      <div class="title-comment">
+      <div class="title-comment" id="headerTitleComment">
         <span class="text-hero">영웅</span>, <span class="text-legend">전설</span> 타이틀 누적 299개 배출
       </div>
     </header>
@@ -568,10 +566,10 @@
         </div>
       </div>
 
-      <!-- Slide 4 -->
+      <!-- Slide 4 (가입 사유 입력란: 부연설명 문구 및 placeholder 제거) -->
       <div class="slide" id="slide4">
-        <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요. (Enter: 줄바꿈 / Ctrl+Enter: 다음)</div>
-        <textarea id="inputReason" class="input-box" placeholder="가입 사유 입력" onfocus="hideError('err4')"></textarea>
+        <div class="slide-title">ZEUS에 가입하고 싶은 사유를 알려주세요.</div>
+        <textarea id="inputReason" class="input-box" onfocus="hideError('err4')"></textarea>
         <div id="err4" class="error-msg">답변을 입력해 주세요.</div>
         <div class="slide-footer">
           <button class="btn-prev" onclick="prevSlide(4)">이전</button>
@@ -755,6 +753,7 @@
 
     function openApplyForm() {
       document.getElementById('navGrid').style.display = 'none';
+      document.getElementById('headerTitleComment').style.display = 'block';
       document.getElementById('hallCard').classList.remove('active');
       
       const applyCard = document.getElementById('applyCard');
@@ -765,6 +764,8 @@
 
     function openHallOfFame() {
       document.getElementById('navGrid').style.display = 'none';
+      // 명예의 전당 진입 시 영웅/전설 서브문구를 숨겨 박스가 상단으로 바짝 붙도록 설정
+      document.getElementById('headerTitleComment').style.display = 'none';
       document.getElementById('applyCard').classList.remove('active');
       
       const hallCard = document.getElementById('hallCard');
@@ -774,11 +775,13 @@
 
     function closeHallOfFame() {
       document.getElementById('hallCard').classList.remove('active');
+      document.getElementById('headerTitleComment').style.display = 'block';
       document.getElementById('navGrid').style.display = 'grid';
     }
 
     function closeForm() {
       document.getElementById('applyCard').classList.remove('active');
+      document.getElementById('headerTitleComment').style.display = 'block';
       document.getElementById('navGrid').style.display = 'grid';
     }
 
