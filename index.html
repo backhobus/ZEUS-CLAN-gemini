@@ -674,28 +674,152 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    let flashAlpha = 0;
-    let lightningBranches = [];
+    // ===== 번개 설정 (숫자만 바꿔서 느낌을 조절할 수 있습니다) =====
+    const MULTI_BOLT_CHANCE = 0.25;       // 동시에 2~3가닥이 칠 확률
+    const LIGHTNING_MIN_INTERVAL = 700;   // 번개 사이 간격(ms) 최소
+    const LIGHTNING_MAX_INTERVAL = 1900;  // 번개 사이 간격(ms) 최대
+    const PULSE_TAU = 55;                 // 번쩍임 한 번이 꺼지는 속도(작을수록 날카로움)
+    const AFTERGLOW_TAU = 260;            // 잔상이 사라지는 속도(클수록 오래 남음)
+    const AFTERGLOW_PEAK = 0.4;           // 잔상의 밝기
+    const MAX_ACTIVE_STRIKES = 3;         // 화면에 동시에 남을 수 있는 번개 수
+    const BRANCH_CHANCE = 0.1;            // 본줄기 마디마다 가지가 갈라질 확률
+    const MAX_BRANCHES_PER_BOLT = 4;      // 한 가닥에서 갈라지는 가지의 최대 개수
+
+    let strikes = [];
     let nextLightningTime = Date.now() + getRandomInterval();
 
     function getRandomInterval() {
-      return Math.random() * 600 + 200;
+      return Math.random() * (LIGHTNING_MAX_INTERVAL - LIGHTNING_MIN_INTERVAL) + LIGHTNING_MIN_INTERVAL;
     }
 
-    function createLightning() {
-      const isDesktop = window.innerWidth > 768;
-      const startX = isDesktop ? Math.random() * canvas.width : Math.random() * (canvas.width * 0.9) + (canvas.width * 0.05);
+    // 본줄기의 한 지점에서 옆으로 갈라져 나오는 짧은 가지 생성
+    function createBranch(startX, startY, isDesktop, maxY) {
+      const dir = Math.random() < 0.5 ? -1 : 1;      // 왼쪽/오른쪽 방향
+      const drift = isDesktop ? 38 : 20;             // 옆으로 퍼지는 정도
+      const steps = 4 + Math.floor(Math.random() * 6);
+      let x = startX;
+      let y = startY;
+      const path = [{x: x, y: y}];
+
+      for (let i = 0; i < steps; i++) {
+        x += dir * (Math.random() * drift * 0.8 + drift * 0.3) + (Math.random() - 0.5) * drift * 0.6;
+        y += Math.random() * 20 + 8;
+        if (y > maxY) break;                         // 본줄기보다 더 아래로는 내려가지 않음
+        path.push({x: x, y: y});
+      }
+      return path;
+    }
+
+    // 번개 한 가닥 생성 (지정한 x좌표에서 시작): 본줄기 + 갈라진 가지들
+    function createBolt(startX, isDesktop) {
       let currentX = startX;
       let currentY = 0;
-      let branches = [{x: currentX, y: currentY}];
+      const path = [{x: currentX, y: currentY}];
+      const branches = [];
+      // 가닥마다 땅에 닿는 높이를 조금씩 다르게
+      const reach = canvas.height * (0.6 + Math.random() * 0.2);
 
-      while (currentY < canvas.height * 0.75) {
+      while (currentY < reach) {
         currentX += (Math.random() - 0.5) * (isDesktop ? 140 : 70);
         currentY += Math.random() * 35 + 15;
-        branches.push({x: currentX, y: currentY});
+        path.push({x: currentX, y: currentY});
+
+        // 윗부분과 끝부분을 제외한 마디에서 확률적으로 가지가 갈라짐
+        if (path.length > 3 &&
+            currentY < reach * 0.85 &&
+            branches.length < MAX_BRANCHES_PER_BOLT &&
+            Math.random() < BRANCH_CHANCE) {
+          const branch = createBranch(currentX, currentY, isDesktop, reach);
+          if (branch.length > 2) branches.push(branch);
+        }
       }
-      lightningBranches = branches;
-      flashAlpha = 0.9;
+      return { path: path, branches: branches };
+    }
+
+    // 번개 1회(1~3가닥 + 깜빡임 패턴) 생성
+    function createStrike() {
+      const isDesktop = window.innerWidth > 768;
+
+      // 대부분은 한 가닥, 가끔 2~3가닥이 동시에 침
+      let count = 1;
+      if (Math.random() < MULTI_BOLT_CHANCE) {
+        count = Math.random() < 0.6 ? 2 : 3;
+      }
+
+      // 화면을 가닥 수만큼 구역으로 나눠서 겹치지 않게 배치
+      const minX = isDesktop ? 0 : canvas.width * 0.05;
+      const usableWidth = isDesktop ? canvas.width : canvas.width * 0.9;
+      const zoneWidth = usableWidth / count;
+
+      const bolts = [];
+      for (let i = 0; i < count; i++) {
+        const startX = minX + zoneWidth * i + Math.random() * zoneWidth;
+        bolts.push(createBolt(startX, isDesktop));
+      }
+
+      // 실제 번개처럼 첫 방전 뒤에 1~3번 더 번쩍이는 패턴
+      // (t: 시작 후 경과 시간, peak: 그 번쩍임의 세기)
+      const pulses = [{ t: 0, peak: 1 }];
+      let t = 0;
+      const extra = 1 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < extra; i++) {
+        t += 70 + Math.random() * 110;
+        pulses.push({ t: t, peak: 0.45 + Math.random() * 0.5 });
+      }
+
+      const now = Date.now();
+      strikes.push({
+        bolts: bolts,
+        pulses: pulses,
+        start: now,
+        end: now + t + AFTERGLOW_TAU * 4
+      });
+    }
+
+    // 현재 시각 기준 번쩍임(flash)과 잔상(glow)의 밝기 계산
+    function getStrikeLevels(strike, now) {
+      const elapsed = now - strike.start;
+      let flash = 0;
+      let glow = 0;
+      for (let i = 0; i < strike.pulses.length; i++) {
+        const p = strike.pulses[i];
+        const dt = elapsed - p.t;
+        if (dt < 0) continue;
+        flash = Math.max(flash, p.peak * Math.exp(-dt / PULSE_TAU));
+        glow = Math.max(glow, p.peak * AFTERGLOW_PEAK * Math.exp(-dt / AFTERGLOW_TAU));
+      }
+      return { flash: flash, glow: glow };
+    }
+
+    function strokePath(points) {
+      if (points.length < 2) return;
+      ctx.beginPath();
+      ctx.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        ctx.lineTo(points[i].x, points[i].y);
+      }
+      ctx.stroke();
+    }
+
+    function drawBolts(bolts, width, color, blur) {
+      ctx.strokeStyle = color;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+      ctx.shadowBlur = blur;
+      ctx.shadowColor = '#d4af37';
+      bolts.forEach(bolt => {
+        // 본줄기: 전체 굵기와 밝기
+        ctx.lineWidth = width;
+        ctx.globalAlpha = 1;
+        strokePath(bolt.path);
+
+        // 가지: 본줄기보다 가늘고 약간 어둡게
+        ctx.lineWidth = Math.max(1, width * 0.5);
+        ctx.globalAlpha = 0.75;
+        bolt.branches.forEach(strokePath);
+      });
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
     }
 
     function animateLightning() {
@@ -705,34 +829,36 @@
       const hallCardActive = document.getElementById('hallCard').classList.contains('active');
 
       if (!applyCardActive && !hallCardActive) {
-        if (Date.now() > nextLightningTime) {
-          createLightning();
-          nextLightningTime = Date.now() + getRandomInterval();
+        const now = Date.now();
+        const isDesktop = window.innerWidth > 768;
+
+        // 수명이 끝난 번개 정리
+        strikes = strikes.filter(s => now < s.end);
+
+        if (now > nextLightningTime) {
+          if (strikes.length < MAX_ACTIVE_STRIKES) createStrike();
+          nextLightningTime = now + getRandomInterval();
         }
 
-        if (flashAlpha > 0) {
-          ctx.fillStyle = `rgba(212, 175, 55, ${flashAlpha * 0.15})`;
+        strikes.forEach(strike => {
+          const levels = getStrikeLevels(strike, now);
+
+          // 화면 전체가 번쩍이는 효과 (잔상 동안에도 은은하게 남음)
+          ctx.fillStyle = `rgba(212, 175, 55, ${levels.flash * 0.15 + levels.glow * 0.06})`;
           ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-          if (lightningBranches.length > 1) {
-            ctx.strokeStyle = `rgba(255, 255, 255, ${flashAlpha})`;
-            ctx.lineWidth = window.innerWidth > 768 ? 3.5 : 2.5;
-            ctx.shadowBlur = 25;
-            ctx.shadowColor = '#d4af37';
-            ctx.beginPath();
-            ctx.moveTo(lightningBranches[0].x, lightningBranches[0].y);
-            for (let i = 1; i < lightningBranches.length; i++) {
-              ctx.lineTo(lightningBranches[i].x, lightningBranches[i].y);
-            }
-            ctx.stroke();
-            ctx.shadowBlur = 0;
+          // 잔상: 굵고 흐릿한 금빛 번짐이 천천히 사라짐
+          if (levels.glow > 0.01) {
+            drawBolts(strike.bolts, isDesktop ? 9 : 6, `rgba(255, 225, 140, ${levels.glow})`, 40);
           }
 
-          flashAlpha -= 0.12;
-        }
+          // 번쩍임: 가늘고 밝은 흰색 중심선이 빠르게 꺼짐
+          if (levels.flash > 0.02) {
+            drawBolts(strike.bolts, isDesktop ? 3.5 : 2.5, `rgba(255, 255, 255, ${levels.flash})`, 25);
+          }
+        });
       } else {
-        flashAlpha = 0;
-        lightningBranches = [];
+        strikes = [];
       }
 
       requestAnimationFrame(animateLightning);
