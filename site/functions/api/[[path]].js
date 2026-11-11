@@ -17,22 +17,6 @@ function cleanText(value, maxLength = 120) {
   return String(value ?? '').replace(/[\r\n\0]/g, ' ').trim().slice(0, maxLength);
 }
 
-function getClientCountry(request) {
-  // Cloudflare Pages Function의 request.cf.country를 우선 사용하고,
-  // 값이 없을 때만 CF-IPCountry 헤더를 확인합니다.
-  const cfCountry = cleanText(request.cf?.country, 2).toUpperCase();
-  const headerCountry = cleanText(request.headers.get('CF-IPCountry'), 2).toUpperCase();
-  return cfCountry || headerCountry;
-}
-
-function isAllowedKoreanRequest(request) {
-  const clientIp = cleanText(request.headers.get('CF-Connecting-IP'), 64);
-  const country = getClientCountry(request);
-
-  // Cloudflare가 전달한 연결 IP가 없거나 대한민국(KR)이 아니면 차단합니다.
-  return Boolean(clientIp) && country === 'KR';
-}
-
 function inferOS(platformHint, platformVersion, userAgent) {
   const platform = cleanText(platformHint, 50).toLowerCase();
   const ua = String(userAgent || '');
@@ -106,11 +90,6 @@ export async function onRequest({ request, env }) {
 
   if (!isHallRequest && !isApplyRequest) {
     return jsonResponse({ result: 'error', message: 'Not found' }, 404);
-  }
-
-  // 국내 IP만 API에 접근할 수 있도록 공통 적용합니다.
-  if (!isAllowedKoreanRequest(request)) {
-    return jsonResponse({ result: 'error', message: '접속이 허용되지 않습니다.' }, 403);
   }
 
   if (!env.APPS_SCRIPT_URL || !env.APPS_SCRIPT_TOKEN) {
