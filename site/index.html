@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>ZEUS CLAN</title>
   <meta name="description" content="WHERE YOUR LEGEND BEGINS">
   <meta property="og:type" content="website">
@@ -103,7 +103,9 @@
       flex-direction: column;
       align-items: center;
       width: 100%;
-      transition: opacity 0.3s ease;
+      /* 로고·SINCE 2020·ZEUS CLAN을 한 그룹으로 부드럽게 이동 */
+      transition: opacity 0.3s ease, transform 0.56s cubic-bezier(0.22, 1, 0.36, 1);
+      will-change: transform;
     }
 
     .logo-container {
@@ -165,6 +167,23 @@
       font-weight: 500;
       color: var(--normal-text);
       letter-spacing: 0.5px;
+      /* 서브 화면에서도 영역을 유지해 브랜드 요소의 기준 위치가 급격히 바뀌지 않도록 함 */
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.25s ease, visibility 0s linear 0s;
+    }
+
+    .container.subview-active .title-comment {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      header,
+      .title-comment {
+        transition: none !important;
+      }
     }
 
     .text-hero {
@@ -531,6 +550,62 @@
         gap: 8px;
       }
     }
+
+
+    /* 모바일 메인 화면은 브라우저 UI를 제외한 실제 표시 영역에 맞춰 크기만 고정하고 스크롤만 차단합니다. */
+    :root {
+      --zeus-visible-height: 100vh;
+      --zeus-visible-width: 100vw;
+    }
+
+    @media (max-width: 768px), (max-height: 520px) and (pointer: coarse) {
+      html.mobile-lobby-fit,
+      html.mobile-lobby-fit body {
+        width: 100%;
+        height: var(--zeus-visible-height, 100vh);
+        min-height: var(--zeus-visible-height, 100vh);
+        max-height: var(--zeus-visible-height, 100vh);
+        overflow: hidden !important;
+        overscroll-behavior: none;
+      }
+
+      html.mobile-lobby-fit body {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: auto;
+        left: 0;
+        padding: 0;
+      }
+
+      html.mobile-lobby-fit #lightningCanvas {
+        height: var(--zeus-visible-height, 100vh);
+        max-height: var(--zeus-visible-height, 100vh);
+      }
+
+      /* 기존 모바일 CSS의 로고·문구·버튼 크기와 간격을 그대로 사용합니다. */
+      html.mobile-lobby-fit .container {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        flex: 1 1 auto;
+        padding: calc(env(safe-area-inset-top, 0px) + 10px)
+                 calc(env(safe-area-inset-right, 0px) + 10px)
+                 calc(env(safe-area-inset-bottom, 0px) + 10px)
+                 calc(env(safe-area-inset-left, 0px) + 10px);
+      }
+
+      /* 부모 높이가 줄어도 브랜드와 버튼의 실제 크기는 줄이지 않습니다. */
+      html.mobile-lobby-fit .container > header,
+      html.mobile-lobby-fit #navGrid {
+        flex-shrink: 0;
+      }
+
+      html.mobile-lobby-fit footer {
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+      }
+    }
+
   </style>
 </head>
 <body oncontextmenu="return false;" ondragstart="return false;" onselectstart="return false;">
@@ -934,77 +1009,171 @@
       history.pushState(state, '', location.pathname + location.search);
     }
 
-    function showLobbyView() {
+
+
+    // 브라우저 주소창/카카오톡 웹뷰 상단·하단 UI를 제외한 실제 표시 높이만 추적합니다.
+    // 화면 요소의 크기나 비율은 변경하지 않습니다. visualViewport 미지원 브라우저에서는 innerHeight를 사용합니다.
+    const zeusViewportQuery = window.matchMedia('(max-width: 768px), (max-height: 520px) and (pointer: coarse)');
+
+    function syncZeusVisibleViewport() {
+      const viewport = window.visualViewport;
+      const visibleHeight = Math.max(1, Math.round(
+        (viewport && viewport.height) || window.innerHeight || document.documentElement.clientHeight
+      ));
+      const visibleWidth = Math.max(1, Math.round(
+        (viewport && viewport.width) || window.innerWidth || document.documentElement.clientWidth
+      ));
+
+      document.documentElement.style.setProperty('--zeus-visible-height', visibleHeight + 'px');
+      document.documentElement.style.setProperty('--zeus-visible-width', visibleWidth + 'px');
+      return visibleHeight;
+    }
+
+    function updateZeusMobileLobbyFit() {
+      syncZeusVisibleViewport();
+      const nav = document.getElementById('navGrid');
+      const applyCard = document.getElementById('applyCard');
+      const hallCard = document.getElementById('hallCard');
+      if (!nav || !applyCard || !hallCard) return;
+
+      const isLobby = getComputedStyle(nav).display !== 'none' &&
+        !applyCard.classList.contains('active') &&
+        !hallCard.classList.contains('active');
+      const shouldLock = zeusViewportQuery.matches && isLobby;
+
+      // 모바일 메인 화면에서만 세로 스크롤을 막습니다. 가입신청서/명예의 전당은 기존 스크롤을 유지합니다.
+      document.documentElement.classList.toggle('mobile-lobby-fit', shouldLock);
+      document.body.classList.toggle('mobile-lobby-fit', shouldLock);
+    }
+
+    // 주소창 표시/숨김, 카카오톡 웹뷰 크기, 회전 및 브라우저 창 변경에만 반응합니다.
+    window.addEventListener('resize', updateZeusMobileLobbyFit, { passive: true });
+    window.addEventListener('orientationchange', updateZeusMobileLobbyFit, { passive: true });
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', updateZeusMobileLobbyFit, { passive: true });
+      window.visualViewport.addEventListener('scroll', updateZeusMobileLobbyFit, { passive: true });
+    }
+
+
+    // 화면 전환 전후 header 위치를 비교해 브랜드 요소들을 한 묶음으로 이동시킵니다.
+    // 첫 화면의 위치가 기준이며, 서브 화면에서 필요한 이동량은 화면 레이아웃에 따라 자동 계산됩니다.
+    function animateHeaderLayoutChange(updateLayout) {
+      const header = document.querySelector('.container > header');
+      if (!header) {
+        updateLayout();
+        return;
+      }
+
+      const startTop = header.getBoundingClientRect().top;
+      updateLayout();
+      const endTop = header.getBoundingClientRect().top;
+      const offsetY = startTop - endTop;
+
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+          !Number.isFinite(offsetY) || Math.abs(offsetY) < 0.5) {
+        return;
+      }
+
+      header.style.transition = 'none';
+      header.style.transform = `translate3d(0, ${offsetY}px, 0)`;
+      void header.offsetHeight;
+
+      requestAnimationFrame(() => {
+        header.style.transition = '';
+        header.style.transform = '';
+      });
+    }
+
+    function updateLobbyView() {
       document.getElementById('applyCard').classList.remove('active');
       document.getElementById('hallCard').classList.remove('active');
-      document.getElementById('headerTitleComment').style.display = 'block';
+      document.querySelector('.container').classList.remove('subview-active');
+
       const nav = document.getElementById('navGrid');
       nav.style.display = 'grid';
       nav.classList.remove('fade-in');
       void nav.offsetWidth;
       nav.classList.add('fade-in');
+      updateZeusMobileLobbyFit();
+    }
+
+    function showLobbyView() {
+      animateHeaderLayoutChange(updateLobbyView);
     }
 
     function restoreZeusHistory(state) {
-      if (!state || !state.zeusClan || state.view === 'lobby') {
-        showLobbyView();
-        return;
-      }
-      const nav = document.getElementById('navGrid');
-      nav.style.display = 'none';
-      nav.classList.remove('fade-in');
-      document.getElementById('headerTitleComment').style.display = 'none';
-      if (state.view === 'apply') {
-        document.getElementById('hallCard').classList.remove('active');
-        document.getElementById('applyCard').classList.add('active');
-        if (state.slide === 'complete') {
-          document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
-          document.getElementById('slideComplete').classList.add('active');
-        pushZeusHistory('apply', 'complete');
-        } else {
-          currentSlide = Math.max(1, Math.min(6, Number(state.slide) || 1));
-          showSlide(currentSlide);
+      animateHeaderLayoutChange(() => {
+        if (!state || !state.zeusClan || state.view === 'lobby') {
+          updateLobbyView();
+          return;
         }
-      } else if (state.view === 'hall') {
-        document.getElementById('applyCard').classList.remove('active');
-        document.getElementById('hallCard').classList.add('active');
-        loadHallOfFameImages();
-      } else {
-        showLobbyView();
-      }
+
+        const nav = document.getElementById('navGrid');
+        nav.style.display = 'none';
+        nav.classList.remove('fade-in');
+        document.querySelector('.container').classList.add('subview-active');
+
+        if (state.view === 'apply') {
+          document.getElementById('hallCard').classList.remove('active');
+          document.getElementById('applyCard').classList.add('active');
+          if (state.slide === 'complete') {
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            document.getElementById('slideComplete').classList.add('active');
+            pushZeusHistory('apply', 'complete');
+          } else {
+            currentSlide = Math.max(1, Math.min(6, Number(state.slide) || 1));
+            showSlide(currentSlide);
+          }
+        } else if (state.view === 'hall') {
+          document.getElementById('applyCard').classList.remove('active');
+          document.getElementById('hallCard').classList.add('active');
+          loadHallOfFameImages();
+        } else {
+          updateLobbyView();
+        }
+        updateZeusMobileLobbyFit();
+      });
     }
 
     window.addEventListener('popstate', function(event) {
       restoreZeusHistory(event.state);
     });
 
-    // 가입신청서 열기 (서브타이틀 숨김 처리로 상단 바짝 배치)
+    updateZeusMobileLobbyFit();
+
+    // 가입신청서 화면: 브랜드 요소가 첫 화면에서 이동할 위치까지 부드럽게 재배치됩니다.
     function openApplyForm() {
       pushZeusHistory('apply', 1);
-      const nav = document.getElementById('navGrid');
-      nav.style.display = 'none';
-      nav.classList.remove('fade-in');
-      document.getElementById('headerTitleComment').style.display = 'none';
-      document.getElementById('hallCard').classList.remove('active');
-      
-      const applyCard = document.getElementById('applyCard');
-      applyCard.classList.add('active');
-      currentSlide = 1;
-      showSlide(1);
+      animateHeaderLayoutChange(() => {
+        const nav = document.getElementById('navGrid');
+        nav.style.display = 'none';
+        nav.classList.remove('fade-in');
+        document.querySelector('.container').classList.add('subview-active');
+        document.getElementById('hallCard').classList.remove('active');
+
+        const applyCard = document.getElementById('applyCard');
+        applyCard.classList.add('active');
+        currentSlide = 1;
+        showSlide(1);
+        updateZeusMobileLobbyFit();
+      });
     }
 
-    // 명예의 전당 열기 (서브타이틀 숨김 처리로 상단 바짝 배치)
+    // 명예의 전당 화면: 로고·SINCE 2020·ZEUS CLAN의 간격과 정렬을 유지한 채 함께 이동합니다.
     function openHallOfFame() {
       pushZeusHistory('hall', null);
-      const nav = document.getElementById('navGrid');
-      nav.style.display = 'none';
-      nav.classList.remove('fade-in');
-      document.getElementById('headerTitleComment').style.display = 'none';
-      document.getElementById('applyCard').classList.remove('active');
-      
-      const hallCard = document.getElementById('hallCard');
-      hallCard.classList.add('active');
-      loadHallOfFameImages();
+      animateHeaderLayoutChange(() => {
+        const nav = document.getElementById('navGrid');
+        nav.style.display = 'none';
+        nav.classList.remove('fade-in');
+        document.querySelector('.container').classList.add('subview-active');
+        document.getElementById('applyCard').classList.remove('active');
+
+        const hallCard = document.getElementById('hallCard');
+        hallCard.classList.add('active');
+        loadHallOfFameImages();
+        updateZeusMobileLobbyFit();
+      });
     }
 
     // 명예의 전당 ➔ 메인(로비) 복귀 (부드러운 애니메이션 적용)
@@ -1192,7 +1361,14 @@
         document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
         document.getElementById('slideComplete').classList.add('active');
       } catch (err) {
-        alert('신청 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+        const message = String(err?.message || '');
+        const accessDeniedMessages = [
+          '등록된 IP 주소에서는 가입 신청을 할 수 없습니다.',
+          '가입 신청은 대한민국(KR) IP에서만 가능합니다.'
+        ];
+        alert(accessDeniedMessages.includes(message)
+          ? message
+          : '신청 전송 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
         console.error(err);
       } finally {
         isSubmittingApplication = false;
