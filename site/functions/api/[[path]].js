@@ -1,6 +1,6 @@
 // Cloudflare Pages Function
 // Routes: GET /api/hall and POST /api/apply
-// Required encrypted bindings: APPS_SCRIPT_URL and APPS_SCRIPT_TOKEN
+// Required bindings: APPS_SCRIPT_URL, APPS_SCRIPT_TOKEN; optional: BLOCKED_APPLICATION_IPS
 
 function jsonResponse(payload, status = 200) {
   return new Response(JSON.stringify(payload), {
@@ -17,6 +17,47 @@ function cleanText(value, maxLength = 120) {
   return String(value ?? '').replace(/[\r\n\0]/g, ' ').trim().slice(0, maxLength);
 }
 
+function normalizeIp(value) {
+  let ip = cleanText(value, 64).toLowerCase();
+
+  // IPv6 주소를 대괄호로 입력한 경우 대괄호를 제거합니다.
+  if (ip.startsWith('[') && ip.endsWith(']')) {
+    ip = ip.slice(1, -1);
+  }
+
+  // IPv6 축약 표기가 서로 달라도 같은 주소로 비교할 수 있도록 정규화합니다.
+  if (ip.includes(':')) {
+    try {
+      return new URL(`http://[${ip}]/`).hostname.slice(1, -1).toLowerCase();
+    } catch (_) {
+      // 잘못된 주소 형식은 원문으로 비교합니다. 유효한 Cloudflare IP는 정상 정규화됩니다.
+    }
+  }
+
+  return ip;
+}
+
+function getClientIp(request) {
+  // 클라이언트가 전송한 신청 데이터가 아닌 Cloudflare가 전달한 IP만 사용합니다.
+  return normalizeIp(request.headers.get('CF-Connecting-IP'));
+}
+
+function getBlockedApplicationIps(value) {
+  // 쉼표, 세미콜론 또는 줄바꿈으로 구분한 정확한 IP 주소 목록입니다.
+  return new Set(
+    String(value ?? '')
+      .split(/[,;\r\n]+/)
+      .map(normalizeIp)
+      .filter(Boolean)
+  );
+}
+
+function isBlockedApplicationIp(clientIp, blockedIpsValue) {
+  const normalizedClientIp = normalizeIp(clientIp);
+  if (!normalizedClientIp) return false;
+  return getBlockedApplicationIps(blockedIpsValue).has(normalizedClientIp);
+}
+
 function getClientCountry(request) {
   // Cloudflare Pages Function의 request.cf.country를 우선 사용하고,
   // 값이 없을 때만 CF-IPCountry 헤더를 확인합니다.
@@ -25,8 +66,7 @@ function getClientCountry(request) {
   return cfCountry || headerCountry;
 }
 
-function isAllowedKoreanRequest(request) {
-  const clientIp = cleanText(request.headers.get('CF-Connecting-IP'), 64);
+function isAllowedKoreanRequest(request, clientIp = getClientIp(request)) {
   const country = getClientCountry(request);
 
   // Cloudflare가 전달한 연결 IP가 없거나 대한민국(KR)이 아니면 차단합니다.
@@ -108,9 +148,24 @@ export async function onRequest({ request, env }) {
     return jsonResponse({ result: 'error', message: 'Not found' }, 404);
   }
 
-  // 국내 IP만 API에 접근할 수 있도록 공통 적용합니다.
-  if (!isAllowedKoreanRequest(request)) {
-    return jsonResponse({ result: 'error', message: '접속이 허용되지 않습니다.' }, 403);
+  // 개별 IP 차단은 가입 신청서 제출(POST)에만 적용합니다.
+  // 홈페이지와 명예의 전당 조회(GET)는 BLOCKED_APPLICATION_IPS의 영향을 받지 않습니다.
+  const clientIp = isApplyRequest ? getClientIp(request) : '';
+  if (isApplyRequest && isBlockedApplicationIp(clientIp, env.BLOCKED_APPLICATION_IPS)) {
+    return jsonResponse({
+      result: 'error',
+      code: 'BLOCKED_APPLICATION_IP',
+      message: '등록된 IP 주소에서는 가입 신청을 할 수 없습니다.'
+    }, 403);
+  }
+
+  // 기존 국내 IP 검사는 그대로 유지합니다. IP/국가 정보가 없거나 KR이 아니면 거부합니다.
+  if (isApplyRequest && !isAllowedKoreanRequest(request, clientIp)) {
+    return jsonResponse({
+      result: 'error',
+      code: 'KOREAN_IP_REQUIRED',
+      message: '가입 신청은 대한민국(KR) IP에서만 가능합니다.'
+    }, 403);
   }
 
   if (!env.APPS_SCRIPT_URL || !env.APPS_SCRIPT_TOKEN) {
@@ -150,7 +205,7 @@ export async function onRequest({ request, env }) {
 
     const deviceInfo = data.deviceInfo && typeof data.deviceInfo === 'object' ? data.deviceInfo : {};
     const userAgent = request.headers.get('User-Agent') || '';
-    const cloudflareIp = cleanText(request.headers.get('CF-Connecting-IP') || '확인 불가', 64);
+    const cloudflareIp = clientIp || '확인 불가';
 
     // IP는 브라우저 입력값을 신뢰하지 않고 Cloudflare가 전달한 연결 IP로 덮어씁니다.
     const payload = {
